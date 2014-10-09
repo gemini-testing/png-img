@@ -1,0 +1,22 @@
+{
+  "name": "png-img",
+  "version": "0.1.0",
+  "description": "PNG Image",
+  "main": "index.js",
+  "gypfile": true,
+  "dependencies": {
+    "nan": "~1.3.0",
+    "inherit": "~2.2.2",
+    "q": "~1.0.1"
+  },
+  "author": "Anton Usmansky <anton.usmansky@gmail.com> (https://github.com/j0tunn)",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/bem/png-img.git"
+  },
+  "bugs": {
+    "url": "https://github.com/bem/png-img/issues"
+  },
+  "homepage": "https://github.com/bem/png-img"
+}
