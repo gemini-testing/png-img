@@ -51,11 +51,14 @@ Handle<Value> PngImgAdapter::New(const Arguments& args) {
 
     Local<Object> imgBuffer = args[0].As<Object>();
     const char* buf = node::Buffer::Data(imgBuffer);
-    if (png_sig_cmp((png_const_bytep)buf, 0, 8)) {
+    const size_t bufLen = node::Buffer::Length(imgBuffer);
+
+    const size_t SIG_LEN = 8;
+    if(bufLen < SIG_LEN || png_sig_cmp((png_const_bytep)buf, 0, SIG_LEN)) {
         return ThrowException(String::New("Not a PNG"));
     }
 
-    PngImgAdapter* obj = new PngImgAdapter(buf, node::Buffer::Length(imgBuffer));
+    PngImgAdapter* obj = new PngImgAdapter(buf, bufLen);
     obj->Wrap(args.This());
 
     return scope.Close(args.This());

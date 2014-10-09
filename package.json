@@ -9,6 +9,14 @@
     "inherit": "~2.2.2",
     "q": "~1.0.1"
   },
+  "devDependencies": {
+    "istanbul": "^0.2.10",
+    "mocha": "^1.20.1",
+    "must": "~0.12.0"
+  },
+  "scripts": {
+    "test": "istanbul test _mocha test"
+  },
   "author": "Anton Usmansky <anton.usmansky@gmail.com> (https://github.com/j0tunn)",
   "license": "MIT",
   "repository": {
