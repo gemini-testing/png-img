@@ -15,7 +15,8 @@
     "must": "~0.12.0"
   },
   "scripts": {
-    "test": "istanbul test _mocha test"
+    "test": "istanbul test _mocha test",
+    "build": "node-gyp rebuild"
   },
   "author": "Anton Usmansky <anton.usmansky@gmail.com> (https://github.com/j0tunn)",
   "license": "MIT",
