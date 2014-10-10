@@ -8,14 +8,17 @@
         "src/PngImg.cc"
       ],
       "include_dirs": ["<!(node -e \"require('nan')\")"],
-      "libraries": ["-lpng"],
+      "libraries": ["<!(libpng-config --libdir)/libpng.a"],
       "conditions": [
-          [ "OS==\"mac\"", {
+          [ "OS=='mac'", {
               "xcode_settings": {
-                  "OTHER_CPLUSPLUSFLAGS" : ["-std=c++11","-stdlib=libc++"],
+                  "OTHER_CPLUSPLUSFLAGS" : ["-std=c++11", "-stdlib=libc++"],
                   "OTHER_LDFLAGS": ["-stdlib=libc++"],
                   "MACOSX_DEPLOYMENT_TARGET": "10.7"
               }
+          }],
+          [ "OS=='linux'", {
+              "cflags": ["-std=c++11"]
           }]
       ]
     }
