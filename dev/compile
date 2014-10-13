@@ -1,0 +1,27 @@
+#!/bin/sh
+
+set -e
+
+PLATFORM=$(node -e 'console.log(process.platform)')
+ARCH=$(node -e 'console.log(process.arch)')
+ROOT=$(cd $(dirname $0)/../; pwd)
+OUT_DIR=${ROOT}/compiled/${PLATFORM}
+
+archs='x64'
+[ "${PLATFORM}" = "darwin" ] || [ "$ARCH" = "ia32" ] || archs="$archs ia32"
+
+for arch in ${archs}
+do
+    echo "Build for ${PLATFORM} ${arch}"
+
+    BUILD_ARCH=${arch} node-gyp rebuild
+
+    target=build/Release/png_img.node
+    strip -Sx ${target}
+
+    out_dir=${OUT_DIR}/${arch}
+    mkdir -p ${out_dir}
+    mv ${target} ${out_dir}/
+
+    echo "Result saved as ${out_dir}/$(basename ${target})"
+done

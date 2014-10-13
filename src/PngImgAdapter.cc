@@ -4,7 +4,6 @@
 #include <node_buffer.h>
 #include <png.h>
 #include <functional>
-#include <iostream>
 
 using namespace v8;
 

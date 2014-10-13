@@ -1,14 +1,22 @@
 {
+  "variables": {
+    "src_dir": "../src",
+    "arch": "<!(node -e 'console.log(process.arch);')",
+    "libpng": "<!(pwd)/libpng/$${BUILD_ARCH:-<(arch)}"
+  },
   "targets": [
     {
       "target_name": "png_img",
       "sources": [
-        "src/init.cc",
-        "src/PngImgAdapter.cc",
-        "src/PngImg.cc"
+        "<(src_dir)/init.cc",
+        "<(src_dir)/PngImgAdapter.cc",
+        "<(src_dir)/PngImg.cc"
       ],
-      "include_dirs": ["<!(node -e \"require('nan')\")"],
-      "libraries": ["<!(libpng-config --libdir)/libpng.a"],
+      "include_dirs": [
+        "<!(node -e \"require('nan')\")",
+        "<(libpng)/include"
+      ],
+      "libraries": ["<(libpng)/lib/libpng.a"],
       "conditions": [
           [ "OS=='mac'", {
               "xcode_settings": {

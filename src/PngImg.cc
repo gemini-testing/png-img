@@ -2,7 +2,6 @@
 #include "./PngStructs.h"
 
 #include <png.h>
-#include <iostream>
 
 using namespace std;
 
