@@ -2,6 +2,8 @@
 #include "./PngStructs.h"
 
 #include <png.h>
+#include <string.h>
+#include <memory>
 
 using namespace std;
 

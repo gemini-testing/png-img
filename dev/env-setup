@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 set -e
 
@@ -7,7 +7,7 @@ LIBPNG_DIR=$(cd $(dirname $0); pwd)/libpng
 TMP_DIR=/tmp/png-img-build
 OS=$(uname -s | tr '[:upper:]' '[:lower:]')
 
-rm -rf ${LIBPNG_DIR}
+rm -rf ${LIBPNG_DIR} ${TMP_DIR}
 mkdir ${LIBPNG_DIR}
 mkdir ${TMP_DIR}
 
@@ -26,11 +26,20 @@ then
     ./configure --prefix=${LIBPNG_DIR}/x64 ${settings}
     make clean && make && make install
 else # linux
+    sudo apt-get install \
+        gcc-multilib \
+        g++-multilib \
+        lib32z1-dev \
+        nodejs-legacy
+
+    zconf_h=/usr/include/zconf.h
+    [ -e ${zconf_h} ] || sudo ln -s /usr/include/x86_64-linux-gnu/zconf.h ${zconf_h}
+
     for subdir in "ia32" "x64"
     do
         mkdir ${LIBPNG_DIR}/${subdir}
         arch=${subdir//[a-z]/}
-        ./configure --prefix="${LIBPNG_DIR}/${subdir}" ${settings} CC="gcc -m${arch}" CXX="g++ -m${arch}"
+        CFLAGS="-m${arch} -fPIC" ./configure --prefix="${LIBPNG_DIR}/${subdir}" ${settings}
         make clean && make && make install
     done
 fi

@@ -14,7 +14,7 @@ for arch in ${archs}
 do
     echo "Build for ${PLATFORM} ${arch}"
 
-    BUILD_ARCH=${arch} node-gyp rebuild
+    BUILD_ARCH=${arch} node-gyp rebuild --arch=${arch}
 
     target=build/Release/png_img.node
     strip -Sx ${target}
