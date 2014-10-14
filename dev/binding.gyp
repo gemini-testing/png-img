@@ -16,7 +16,7 @@
         "<!(node -e \"require('nan')\")",
         "<(libpng)/include"
       ],
-      "libraries": ["<(libpng)/lib/libpng.a"],
+      "libraries": ["<(libpng)/lib/libpng.a", "-lz"],
       "conditions": [
           [ "OS=='mac'", {
               "xcode_settings": {
