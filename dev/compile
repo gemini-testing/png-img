@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 set -e
 
@@ -7,14 +7,14 @@ ARCH=$(node -e 'console.log(process.arch)')
 ROOT=$(cd $(dirname $0)/../; pwd)
 OUT_DIR=${ROOT}/compiled/${PLATFORM}
 
-archs='x64'
-[ "${PLATFORM}" = "darwin" ] || [ "$ARCH" = "ia32" ] || archs="$archs ia32"
+archs=${ARCH}
+[ "${PLATFORM}" = "darwin" ] || [ "$ARCH" = "ia32" ] || archs="x64 ia32"
 
 for arch in ${archs}
 do
     echo "Build for ${PLATFORM} ${arch}"
 
-    BUILD_ARCH=${arch} node-gyp rebuild --arch=${arch}
+    BUILD_ARCH=${arch//[a-z]/} node-gyp rebuild --arch=${arch}
 
     target=build/Release/png_img.node
     strip -Sx ${target}

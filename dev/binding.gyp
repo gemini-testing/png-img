@@ -1,7 +1,7 @@
 {
   "variables": {
     "src_dir": "../src",
-    "arch": "<!(node -e 'console.log(process.arch);')",
+    "arch": "<!(node -e 'console.log(process.arch);' | sed 's;[a-z];;g')",
     "libpng": "<!(pwd)/libpng/$${BUILD_ARCH:-<(arch)}"
   },
   "targets": [

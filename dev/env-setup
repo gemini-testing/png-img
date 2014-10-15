@@ -2,47 +2,71 @@
 
 set -e
 
-LIBPNG_VERSION=1.6.13
-LIBPNG_DIR=$(cd $(dirname $0); pwd)/libpng
+ROOT_DIR=$(cd $(dirname $0); pwd)
 TMP_DIR=/tmp/png-img-build
 OS=$(uname -s | tr '[:upper:]' '[:lower:]')
 
-rm -rf ${LIBPNG_DIR} ${TMP_DIR}
-mkdir ${LIBPNG_DIR}
+# Build library from sources
+# Note: substring '%arch%' in cflags parameters will be replaced with 32 or 64 during configuration step
+buildLib() {
+    local url=$1
+    local install_dir=$2
+    local archs=$3
+    local cflags=$4
+    local extra_settings=$5
+
+    local back=$(pwd)
+    cd ${TMP_DIR}
+
+    wget ${url}
+    local tar_name=${url##*/}
+    tar -xvf $tar_name
+    local dir_name=${tar_name%%.[^0-9]*}
+    cd ${dir_name}
+
+    for arch in $archs
+    do
+        mkdir -p ${install_dir}/${arch}
+        CFLAGS=$(echo "$cflags" | sed "s;%arch%;$arch;g") \
+            ./configure --prefix="${install_dir}/${arch}" ${extra_settings}
+        make clean && make && make install
+    done
+
+    cd ${back}
+}
+
+rm -rf ${TMP_DIR}
 mkdir ${TMP_DIR}
-
-back=`pwd`
-cd ${TMP_DIR}
-
-wget http://download.sourceforge.net/libpng/libpng-${LIBPNG_VERSION}.tar.gz
-tar -xvf libpng-${LIBPNG_VERSION}.tar.gz
-cd libpng-${LIBPNG_VERSION}
-
-settings="--enable-static=yes --enable-shared=no"
 
 if [ "${OS}" = "darwin" ]
 then
-    mkdir ${LIBPNG_DIR}/x64
-    ./configure --prefix=${LIBPNG_DIR}/x64 ${settings}
-    make clean && make && make install
-else # linux
+    ARCHS="64"
+else
+    # Install some required stuff
     sudo apt-get install \
         gcc-multilib \
         g++-multilib \
-        lib32z1-dev \
         nodejs-legacy
 
-    zconf_h=/usr/include/zconf.h
-    [ -e ${zconf_h} ] || sudo ln -s /usr/include/x86_64-linux-gnu/zconf.h ${zconf_h}
+    ARCHS="64 32"
+    EXTRA_CFLAGS="-m%arch% -fPIC"
 
-    for subdir in "ia32" "x64"
-    do
-        mkdir ${LIBPNG_DIR}/${subdir}
-        arch=${subdir//[a-z]/}
-        CFLAGS="-m${arch} -fPIC" ./configure --prefix="${LIBPNG_DIR}/${subdir}" ${settings}
-        make clean && make && make install
-    done
+    # Build zlib
+    buildLib \
+        http://zlib.net/zlib-1.2.8.tar.gz \
+        ${ROOT_DIR}/libz \
+        "${ARCHS}" \
+        "${EXTRA_CFLAGS}"
+
+    EXTRA_CFLAGS="${EXTRA_CFLAGS} -I${ROOT_DIR}/libz/%arch%/include"
 fi
 
-cd $back
+# Build libpng
+buildLib \
+    http://download.sourceforge.net/libpng/libpng-1.6.13.tar.gz \
+    ${ROOT_DIR}/libpng \
+    "${ARCHS}" \
+    "${EXTRA_CFLAGS}" \
+    "--enable-static=yes --enable-shared=no"
+
 rm -rf ${TMP_DIR}
