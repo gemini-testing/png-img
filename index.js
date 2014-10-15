@@ -3,7 +3,7 @@
 var inherit = require('inherit'),
     Q = require('q'),
     path = require('path'),
-    PngImg = require(path.resolve('./compiled', process.platform, process.arch, 'png_img')).PngImg;
+    PngImg = require('./' + path.join('compiled', process.platform, process.arch, 'png_img')).PngImg;
 
 module.exports = inherit({
     ///
