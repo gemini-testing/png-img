@@ -26,7 +26,14 @@
               }
           }],
           [ "OS=='linux'", {
-              "cflags": ["-std=c++11"]
+              "cflags": ["-std=c++11"],
+              "variables": {
+                  "libz": "<!(pwd)/libz/$${BUILD_ARCH:-<(arch)}"
+              },
+              "include_dirs": [
+                  "<(libz)/include"
+              ],
+              "libraries": ["<(libz)/lib/libz.a"],
           }]
       ]
     }
