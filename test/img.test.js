@@ -3,6 +3,7 @@
 var PngImg = require('../'),
     fs = require('fs'),
     path = require('path'),
+    demand = require('must'),
     rawImg = fs.readFileSync(path.resolve(__dirname, './test32x32.png'));
 
 describe('constructor', function() {
@@ -77,30 +78,41 @@ describe('save', function() {
         }
     });
 
-    it('should save image', function() {
-        return img.save(savePath)
-            .then(function() {
-                fs.existsSync(savePath).must.be(true);
-            });
+    it('should fail if non-exstent path passed', function(done) {
+        var badPath = path.resolve(__dirname, 'asdf', 'tmp.png');
+        img.save(badPath, function(error) {
+            demand(error).not.be(undefined);
+            done();
+        });
     });
 
-    it('should overwrite existing file', function() {
+    it('should save image', function(done) {
+        img.save(savePath, function(error) {
+            demand(error).be(undefined);
+            fs.existsSync(savePath).must.be(true);
+            done();
+        });
+    });
+
+    it('should overwrite existing file', function(done) {
         var txt = 'o.O';
         fs.writeFileSync(savePath, txt);
         fs.readFileSync(savePath, {encoding: 'utf8'}).must.be(txt);
 
-        return img.save(savePath)
-            .then(function() {
-                fs.readFileSync(savePath, {encoding: 'utf8'}).must.not.be(txt);
-            });
+        img.save(savePath, function(error) {
+            demand(error).be(undefined);
+            fs.readFileSync(savePath, {encoding: 'utf8'}).must.not.be(txt);
+            done();
+        });
     });
 
-    it('should read previously saved img', function() {
-        return img.save(savePath)
-            .then(function() {
-                var img2 = new PngImg(fs.readFileSync(savePath));
-                img2.size().width.must.be(img.size().width);
-                img2.size().height.must.be(img.size().height);
-            });
+    it('should read previously saved img', function(done) {
+        img.save(savePath, function(error) {
+            demand(error).be(undefined);
+            var img2 = new PngImg(fs.readFileSync(savePath));
+            img2.size().width.must.be(img.size().width);
+            img2.size().height.must.be(img.size().height);
+            done();
+        });
     });
 });

@@ -1,7 +1,6 @@
 'use strict';
 
 var inherit = require('inherit'),
-    Q = require('q'),
     path = require('path'),
     PngImg = require('./' + path.join('compiled', process.platform, process.arch, 'png_img')).PngImg;
 
@@ -25,15 +24,17 @@ module.exports = inherit({
         return this;
     },
 
-    ///
-    save: function(file) {
-        var d = Q.defer();
-        this.img_.write(file, function(error) {
-            if (error) {
-                return d.reject(error);
-            }
-            d.fulfill(file);
-        });
-        return d.promise;
+    /**
+     * Save image to file
+     * @param  {String}   file     path to file
+     * @param  {SaveCallback} callback
+     */
+    save: function(file, callback) {
+        this.img_.write(file, callback);
     }
+
+    /**
+     * @typedef {Function} SaveCallback
+     * @param {String} error error message in case of fail
+     */
 });
