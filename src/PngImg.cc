@@ -68,12 +68,12 @@ void PngImg::ReadImg_(PngReadStruct& rs) {
 }
 
 ///
-bool PngImg::Crop(png_uint_32 leftTopX, png_uint_32 leftTopY, png_uint_32 width, png_uint_32 height)
+bool PngImg::Crop(png_uint_32 offsetX, png_uint_32 offsetY, png_uint_32 width, png_uint_32 height)
 {
-    if(leftTopX >= info_.width
-    || leftTopY >= info_.height
-    || leftTopX + width > info_.width
-    || leftTopY + height > info_.height)
+    if(offsetX >= info_.width
+    || offsetY >= info_.height
+    || offsetX + width > info_.width
+    || offsetY + height > info_.height)
     {
         error_ = "Bad arguments";
         return false;
@@ -82,7 +82,7 @@ bool PngImg::Crop(png_uint_32 leftTopX, png_uint_32 leftTopY, png_uint_32 width,
     const png_uint_32 pxlSize = info_.rowbytes / info_.width;
 
     for(size_t i = 0; i < height; ++i) {
-        rowPtrs_[i] = rowPtrs_[i + leftTopY] + leftTopX * pxlSize;
+        rowPtrs_[i] = rowPtrs_[i + offsetY] + offsetX * pxlSize;
     }
 
     info_.width = width;

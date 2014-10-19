@@ -19,8 +19,8 @@ module.exports = inherit({
     },
 
     ///
-    crop: function(leftTopX, leftTopY, width, height) {
-        this.img_.crop(leftTopX, leftTopY, width, height);
+    crop: function(offsetX, offsetY, width, height) {
+        this.img_.crop(offsetX, offsetY, width, height);
         return this;
     },
 

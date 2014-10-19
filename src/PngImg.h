@@ -28,7 +28,7 @@ public:
     unsigned Height() const { return info_.height; }
     std::string LastError() const { return error_; }
 
-    bool Crop(png_uint_32 leftTopX, png_uint_32 leftTopY, png_uint_32 width, png_uint_32 height);
+    bool Crop(png_uint_32 offsetX, png_uint_32 offsetY, png_uint_32 width, png_uint_32 height);
     bool Write(const std::string& file);
 
 private:
