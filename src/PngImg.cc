@@ -72,6 +72,8 @@ bool PngImg::Crop(png_uint_32 offsetX, png_uint_32 offsetY, png_uint_32 width, p
 {
     if(offsetX >= info_.width
     || offsetY >= info_.height
+    || width == 0
+    || height == 0
     || offsetX + width > info_.width
     || offsetY + height > info_.height)
     {

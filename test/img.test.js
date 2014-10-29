@@ -36,11 +36,34 @@ describe('size', function() {
 });
 
 describe('crop', function() {
-    var img = new PngImg(rawImg);
+    var img;
 
-    it('should throw if bad args passed', function() {
+    beforeEach(function() {
+        img = new PngImg(rawImg);
+    });
+
+    it('should throw if negative args passed', function() {
         (function(){
             return img.crop(-1, -1, -1, -1);
+        }).must.throw();
+    });
+
+    it('should treat bad offset as zeroes', function() {
+        var size = img.size();
+        img.crop('adsf', {}, size.width, size.height);
+        img.size().width.must.be(size.width);
+        img.size().height.must.be(size.height);
+    });
+
+    it('should throw if zero width or height passed', function() {
+        (function(){
+            return img.crop(1, 1, 0, 0);
+        }).must.throw();
+    });
+
+    it('should treat bad width or height as zeroes', function() {
+        (function(){
+            return img.crop(1, 1, null, []);
         }).must.throw();
     });
 
