@@ -26,6 +26,7 @@ PngImg::PngImg(const char* buf, const size_t bufLen)
     : rowPtrs_(nullptr)
     , data_(nullptr)
 {
+    memset(&info_, 0, sizeof(ImgInfo));
     PngReadStruct readStruct;
     if(readStruct.Valid()) {
         BufPtr bufPtr = {buf, bufLen};
@@ -97,7 +98,7 @@ bool PngImg::Crop(png_uint_32 offsetX, png_uint_32 offsetY, png_uint_32 width, p
 bool PngImg::Write(const string& file) {
     auto fileClose = [](FILE* fp){ if(fp) fclose(fp); };
     unique_ptr<FILE, decltype(fileClose)> fp(fopen(file.c_str(), "wb"), fileClose);
-    if(!fp) {
+    if(!fp.get()) {
         error_ = "Can't open file for writing";
         return false;
     }
