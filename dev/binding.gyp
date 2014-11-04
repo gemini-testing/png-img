@@ -1,8 +1,6 @@
 {
   "variables": {
-    "src_dir": "../src",
-    "arch": "<!(node -e 'console.log(process.arch);' | sed 's;[a-z];;g')",
-    "libpng": "<!(pwd)/libpng/$${BUILD_ARCH:-<(arch)}"
+    "src_dir": "../src"
   },
   "targets": [
     {
@@ -14,9 +12,10 @@
       ],
       "include_dirs": [
         "<!(node -e \"require('nan')\")",
-        "<(libpng)/include"
       ],
-      "libraries": ["<(libpng)/lib/libpng.a"],
+      "dependencies": [
+        "../third_party/libpng/libpng.gyp:libpng"
+      ],
       "conditions": [
           [ "OS=='mac'", {
               "xcode_settings": {
@@ -26,14 +25,7 @@
               }
           }],
           [ "OS=='linux'", {
-              "cflags": ["-std=c++11"],
-              "variables": {
-                  "libz": "<!(pwd)/libz/$${BUILD_ARCH:-<(arch)}"
-              },
-              "include_dirs": [
-                  "<(libz)/include"
-              ],
-              "libraries": ["<(libz)/lib/libz.a"],
+              "cflags": ["-std=c++11"]
           }]
       ]
     }

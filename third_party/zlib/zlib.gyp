@@ -23,6 +23,20 @@
       'include_dirs': [
         '.'
       ],
+      'defines': [
+          'HAVE_STDARG_H'
+      ],
+      'conditions': [
+        ['OS=="win"', {
+          'defines': [
+            'ZLIB_WINAPI'
+          ]
+        }, {
+          'defines': [
+            'HAVE_UNISTD_H'
+          ]
+        }]
+      ],
       'direct_dependent_settings': {
         'include_dirs': [
           '.'

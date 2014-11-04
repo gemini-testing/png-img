@@ -1,4 +1,3 @@
 dev/build/
-dev/libpng/
-dev/libz/
+dev/third_party/
 node_modules
