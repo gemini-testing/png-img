@@ -70,15 +70,12 @@ img.save('path/to/file.png', function(error) {
 ```
 
 
-## Dev environment setup
+## Dev environment requirements
 Linux: Depends on GCC 4.7 or later
 
 OS X: Tested with Xcode 6.0 development tools (but should be ok with Xcode 5.0 also)
 
-```
-npm run env-setup
-```
-This will install and build all necessary stuff
+Windows: Tested on MSVC 2012
 
 ## Build
 ```
