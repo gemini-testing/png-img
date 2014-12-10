@@ -17,8 +17,7 @@
   },
   "scripts": {
     "test": "istanbul test _mocha test",
-    "build": "cd dev && ./compile",
-    "env-setup": "cd dev && ./env-setup"
+    "build": "cd dev && ./compile"
   },
   "author": "Anton Usmansky <anton.usmansky@gmail.com> (https://github.com/j0tunn)",
   "license": "MIT",
