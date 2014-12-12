@@ -25,3 +25,9 @@ do
 
     echo "Result saved as ${out_dir}/$(basename ${target})"
 done
+
+if [ "$ALL" = "1" ]
+then
+    echo "Compile on Ubuntu"
+    vagrant ssh -c "cd /vagrant ; npm install && npm run build"
+fi

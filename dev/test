@@ -1,0 +1,9 @@
+#!/bin/bash
+
+istanbul test _mocha test
+
+if [ "$ALL" = "1" ]
+then
+    echo "Test on Ubuntu"
+    vagrant ssh -c "cd /vagrant ; npm install && npm test"
+fi

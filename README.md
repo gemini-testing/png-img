@@ -83,3 +83,13 @@ npm run build
 ```
 This will build native node extension and place it to the `compiled` directory
 
+## Vagrant
+Use vagrant to build and test on Linux from OS X.
+
+Tested with `vagrant 1.7` and `VirtualBox 4.3`.
+
+1. Install `vagrant` and `VirtualBox`.
+2. Run `vagrant up`
+3. Run `ALL=1 npm run build` to build for all platforms
+4. Run `ALL=1 npm test` to run tests on all platforms
+

@@ -17,7 +17,7 @@
     "node-gyp": "~1.0.2"
   },
   "scripts": {
-    "test": "istanbul test _mocha test",
+    "test": "./dev/test",
     "build": "cd dev && ./compile"
   },
   "author": "Anton Usmansky <anton.usmansky@gmail.com> (https://github.com/j0tunn)",
