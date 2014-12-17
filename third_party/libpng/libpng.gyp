@@ -6,6 +6,13 @@
       'dependencies': [
         '../zlib/zlib.gyp:zlib'
       ],
+      'conditions': [
+        ['OS=="win"', {
+          'defines': [
+            'ZLIB_WINAPI'
+          ]
+        }]
+      ],
       'sources': [
         'png.c',
         'pngerror.c',
