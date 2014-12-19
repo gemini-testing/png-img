@@ -11,13 +11,12 @@
     "inherit": "~2.2.2"
   },
   "devDependencies": {
-    "istanbul": "^0.2.10",
-    "mocha": "^1.20.1",
+    "mocha": "^2.0.1",
     "must": "~0.12.0",
     "node-gyp": "~1.0.2"
   },
   "scripts": {
-    "test": "istanbul test _mocha test",
+    "test": "./dev/test",
     "build": "cd dev && ./compile"
   },
   "author": "Anton Usmansky <anton.usmansky@gmail.com> (https://github.com/j0tunn)",

@@ -1,3 +1,6 @@
 dev/build/
 dev/third_party/
 node_modules
+.vagrant
+win.box
+npm-debug.log

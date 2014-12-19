@@ -7,21 +7,91 @@ ARCH=$(node -e 'console.log(process.arch)')
 ROOT=$(cd $(dirname $0)/../; pwd)
 OUT_DIR=${ROOT}/compiled/${PLATFORM}
 
-archs=${ARCH}
-[ "${PLATFORM}" = "darwin" ] || [ "$ARCH" = "ia32" ] || archs="x64 ia32"
+##
+gypRebuild() {
+    local arch=${1}
+    local buildArch=${arch//[a-z]/}
+    local nodeGyp=${ROOT}/node_modules/.bin/node-gyp
+    if [ "${PLATFORM}" = "win32" ]
+    then
+        # Workaround: don't build debug info
+        # Avoid "incorrect MSPDB120.DLL version" linker error
+        # https://github.com/TooTallNate/node-gyp/issues/551
+        ${nodeGyp} clean
+        BUILD_ARCH=${buildArch} ${nodeGyp} configure --arch=${arch}
+        sed -i"" -e 's;<GenerateDebugInformation>true;<GenerateDebugInformation>false;g' build/png_img.vcxproj
+        ${nodeGyp} build
+    else
+        BUILD_ARCH=${buildArch} ${nodeGyp} rebuild --arch=${arch}
+    fi
+}
 
-for arch in ${archs}
-do
-    echo "Build for ${PLATFORM} ${arch}"
+##
+build() {
+    local archs=${ARCH}
+    [ "${PLATFORM}" = "darwin" ] || [ "$ARCH" = "ia32" -a "${PLATFORM}" != "win32" ] || archs="x64 ia32"
 
-    BUILD_ARCH=${arch//[a-z]/} ${ROOT}/node_modules/.bin/node-gyp rebuild --arch=${arch}
+    for arch in ${archs}
+    do
+        echo "Build for ${PLATFORM} ${arch}"
 
-    target=build/Release/png_img.node
-    strip -Sx ${target}
+        gypRebuild ${arch}
 
-    out_dir=${OUT_DIR}/${arch}
-    mkdir -p ${out_dir}
-    mv ${target} ${out_dir}/
+        target=build/Release/png_img.node
+        [ "${PLATFORM}" != "win32" ] && strip -Sx ${target}
 
-    echo "Result saved as ${out_dir}/$(basename ${target})"
-done
+        out_dir=${OUT_DIR}/${arch}
+        mkdir -p ${out_dir}
+        mv ${target} ${out_dir}/
+
+        echo "Result saved as ${out_dir}/$(basename ${target})"
+    done
+}
+
+##
+genExcludes() {
+    local excludes=`cat ${ROOT}/.gitignore | awk '{ print "--exclude="$1 }' | tr "\n" " "`
+    excludes="$excludes --exclude=.git --exclude=compiled"
+    echo $excludes
+}
+
+##
+buildOn() {
+    local os=$1
+    case $os in
+        lin*)
+            echo "Compile on Ubuntu"
+            local excludes=`genExcludes`
+            vagrant ssh linux -c "\
+                rsync -av --delete-after --delete-excluded ${excludes} /vagrant/* ./png-img && \
+                cd png-img && \
+                npm install && \
+                npm run build && \
+                rsync -av ./compiled /vagrant/ \
+                "
+            ;;
+        win*)
+            echo "Compile on Windows"
+            local excludes=`genExcludes`
+            vagrant ssh win -c "\
+                rsync -av --delete-after --delete-excluded ${excludes} /cygdrive/c/vagrant/* ./png-img && \
+                cd png-img && \
+                npm install && \
+                cd dev && ./compile && cd ../ && \
+                rsync -av ./compiled /cygdrive/c/vagrant/ \
+                "
+            ;;
+        all)
+            buildOn current
+            buildOn linux
+            buildOn windows
+            ;;
+        *)
+            build
+            ;;
+    esac
+
+    echo
+}
+
+buildOn ${OS}
