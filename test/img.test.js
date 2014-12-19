@@ -4,7 +4,7 @@ var PngImg = require('../'),
     fs = require('fs'),
     path = require('path'),
     demand = require('must'),
-    rawImg = fs.readFileSync(path.resolve(__dirname, './test32x32.png'));
+    rawImg = fs.readFileSync(path.join(__dirname, 'test32x32.png'));
 
 describe('constructor', function() {
     it('should throw if not a buffer passed', function() {
@@ -93,7 +93,7 @@ describe('crop', function() {
 
 describe('save', function() {
     var img = new PngImg(rawImg),
-        savePath = path.resolve(__dirname, './tmp.png');
+        savePath = path.join(__dirname, 'tmp.png');
 
     afterEach(function() {
         if(fs.existsSync(savePath)) {
@@ -102,7 +102,7 @@ describe('save', function() {
     });
 
     it('should fail if non-exstent path passed', function(done) {
-        var badPath = path.resolve(__dirname, 'asdf', 'tmp.png');
+        var badPath = path.join(__dirname, 'asdf', 'tmp.png');
         img.save(badPath, function(error) {
             demand(error).not.be(undefined);
             done();
@@ -137,5 +137,46 @@ describe('save', function() {
             img2.size().height.must.be(img.size().height);
             done();
         });
+    });
+});
+
+describe('get', function() {
+    var rgbTestRawImg = fs.readFileSync(path.join(__dirname, 'rgba4x1.png')),
+        img = new PngImg(rgbTestRawImg);
+
+    it('should throw if x out of the bounds', function() {
+        (function(){
+            return img.get(5, 0);
+        }).must.throw();
+    });
+
+    it('should throw if y out of the bounds', function() {
+        (function(){
+            return img.get(0, 1);
+        }).must.throw();
+    });
+
+    it('should return pixel colors and alpha', function() {
+        var r = img.get(0, 0),
+            g = img.get(1, 0),
+            b = img.get(2, 0),
+            a = img.get(3, 0);
+
+        r.r.must.be(255); r.g.must.be(0); r.b.must.be(0); r.a.must.be(255);
+        g.r.must.be(0); g.g.must.be(255); g.b.must.be(0); g.a.must.be(255);
+        b.r.must.be(0); b.g.must.be(0); b.b.must.be(255); b.a.must.be(255);
+        a.r.must.be(0); a.g.must.be(0); a.b.must.be(0); a.a.must.be(0);
+    });
+
+    it('should return alpha 255 if image without alpha', function() {
+        var noAlphaRaw = fs.readFileSync(path.join(__dirname, 'rgb3x1_noalpha.png')),
+            noAlphaImg = new PngImg(noAlphaRaw),
+            r = noAlphaImg.get(0, 0),
+            g = noAlphaImg.get(1, 0),
+            b = noAlphaImg.get(2, 0);
+
+        r.r.must.be(255); r.g.must.be(0); r.b.must.be(0); r.a.must.be(255);
+        g.r.must.be(0); g.g.must.be(255); g.b.must.be(0); g.a.must.be(255);
+        b.r.must.be(0); b.g.must.be(0); b.b.must.be(255); b.a.must.be(255);
     });
 });

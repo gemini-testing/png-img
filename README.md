@@ -32,6 +32,28 @@ for 32x32 image will print out:
 { width: 32, height: 32 }
 ```
 
+### get(x, y)
+Get pixel color and alpha.
+
+Returns object:
+ * r: red channel (0 to 255)
+ * g: green channel (0 to 255)
+ * b: blue channel (0 to 255)
+ * a: alpha (0 to 255). 0 - transparent
+
+```js
+console.log(img.get(0, 0));
+```
+will print pixel and color for pixel (0, 0):
+```js
+{
+  r: 100,
+  g: 150,
+  b: 200,
+  a: 255
+}
+```
+
 ### crop(offsetX, offsetY, widht, height)
 Crop image. Modifies current image.
 
