@@ -18,6 +18,16 @@ module.exports = inherit({
         };
     },
 
+    /**
+     * Get pixel
+     * @param  {Number} x x coordinate (left to right)
+     * @param  {Number} y y coordinate (top to bottom)
+     * @return {Object}  {r, g, b, a}
+     */
+    get: function(x, y) {
+        return this.img_.get(x, y);
+    },
+
     ///
     crop: function(offsetX, offsetY, width, height) {
         this.img_.crop(offsetX, offsetY, width, height);

@@ -3,6 +3,7 @@
 
 #include <png.h>
 #include <string>
+#include <memory>
 
 struct ImgInfo {
     png_uint_32 width = 0;
@@ -13,6 +14,14 @@ struct ImgInfo {
     png_uint_32 compression_type = 0;
     png_uint_32 filter_type = 0;
     png_uint_32 rowbytes = 0;
+    short pxlsize = 0;
+};
+
+struct Pxl {
+    short r = 0;
+    short g = 0;
+    short b = 0;
+    short a = 0;
 };
 
 class PngReadStruct;
@@ -28,6 +37,7 @@ public:
     unsigned Height() const { return info_.height; }
     std::string LastError() const { return error_; }
 
+    std::unique_ptr<Pxl> Get(png_uint_32 x, png_uint_32 y) const;
     bool Crop(png_uint_32 offsetX, png_uint_32 offsetY, png_uint_32 width, png_uint_32 height);
     bool Write(const std::string& file);
 
@@ -38,7 +48,7 @@ private:
     ImgInfo info_;
     png_bytep* rowPtrs_;
     char* data_;
-    std::string error_;
+    mutable std::string error_;
 };
 
 #endif  // PNG_IMG_H

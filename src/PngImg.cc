@@ -53,6 +53,7 @@ void PngImg::ReadInfo_(PngReadStruct& rs) {
     info_.compression_type = png_get_compression_type(rs.pngPtr, rs.infoPtr);
     info_.filter_type = png_get_filter_type(rs.pngPtr, rs.infoPtr);
     info_.rowbytes = png_get_rowbytes(rs.pngPtr, rs.infoPtr);
+    info_.pxlsize = info_.rowbytes / info_.width;
 }
 
 ///
@@ -65,6 +66,25 @@ void PngImg::ReadImg_(PngReadStruct& rs) {
     }
 
     png_read_image(rs.pngPtr, rowPtrs_);
+}
+
+///
+unique_ptr<Pxl> PngImg::Get(png_uint_32 x, png_uint_32 y) const
+{
+    if(x >= info_.width || y >= info_.height)
+    {
+        error_ = "Out of the bounds";
+        return nullptr;
+    }
+
+    png_bytep p = rowPtrs_[y] + info_.pxlsize * x;
+    unique_ptr<Pxl> pPxl(new Pxl{});
+    pPxl->r = p[0];
+    pPxl->g = p[1];
+    pPxl->b = p[2];
+    pPxl->a = info_.pxlsize > 3 ? p[3] : 255;
+
+    return pPxl;
 }
 
 ///
@@ -81,15 +101,13 @@ bool PngImg::Crop(png_uint_32 offsetX, png_uint_32 offsetY, png_uint_32 width, p
         return false;
     }
 
-    const png_uint_32 pxlSize = info_.rowbytes / info_.width;
-
     for(size_t i = 0; i < height; ++i) {
-        rowPtrs_[i] = rowPtrs_[i + offsetY] + offsetX * pxlSize;
+        rowPtrs_[i] = rowPtrs_[i + offsetY] + offsetX * info_.pxlsize;
     }
 
     info_.width = width;
     info_.height = height;
-    info_.rowbytes = pxlSize * width;
+    info_.rowbytes = info_.pxlsize * width;
     return true;
 }
 

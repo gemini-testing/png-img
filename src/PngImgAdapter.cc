@@ -6,6 +6,7 @@
 #include <functional>
 
 using namespace v8;
+using namespace std;
 
 static Persistent<FunctionTemplate> pngImgAdapterConstructor;
 
@@ -19,6 +20,7 @@ void PngImgAdapter::Init() {
     tpl->InstanceTemplate()->SetAccessor(String::New("width"), PngImgAdapter::Width);
     tpl->InstanceTemplate()->SetAccessor(String::New("height"), PngImgAdapter::Height);
 
+    NODE_SET_PROTOTYPE_METHOD(tpl, "get", PngImgAdapter::Get);
     NODE_SET_PROTOTYPE_METHOD(tpl, "crop", PngImgAdapter::Crop);
     NODE_SET_PROTOTYPE_METHOD(tpl, "write", PngImgAdapter::Write);
 }
@@ -78,6 +80,25 @@ Handle<Value> PngImgAdapter::Width(Local<String>, const AccessorInfo& info) {
 ///
 Handle<Value> PngImgAdapter::Height(Local<String>, const AccessorInfo& info) {
     return GetProperty(info, [](const PngImgAdapter& adapter) { return adapter.img_.Height(); });
+}
+
+///
+Handle<Value> PngImgAdapter::Get(const Arguments& args) {
+    HandleScope scope;
+
+    PngImg& img = node::ObjectWrap::Unwrap<PngImgAdapter>(args.This())->img_;
+    auto pPxl = img.Get(args[0]->Uint32Value(), args[1]->Uint32Value());
+    if(!pPxl) {
+       return ThrowException(String::New(img.LastError().c_str()));
+    }
+
+    Local<Object> obj = Object::New();
+    obj->Set(String::NewSymbol("r"), Number::New(pPxl->r));
+    obj->Set(String::NewSymbol("g"), Number::New(pPxl->g));
+    obj->Set(String::NewSymbol("b"), Number::New(pPxl->b));
+    obj->Set(String::NewSymbol("a"), Number::New(pPxl->a));
+
+    return scope.Close(obj);
 }
 
 ///
