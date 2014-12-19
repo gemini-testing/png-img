@@ -5,14 +5,14 @@
 #include <string>
 
 struct ImgInfo {
-    png_uint_32 width;
-    png_uint_32 height;
-    png_uint_32 bit_depth;
-    png_uint_32 color_type;
-    png_uint_32 interlace_type;
-    png_uint_32 compression_type;
-    png_uint_32 filter_type;
-    png_uint_32 rowbytes;
+    png_uint_32 width = 0;
+    png_uint_32 height = 0;
+    png_uint_32 bit_depth = 0;
+    png_uint_32 color_type = 0;
+    png_uint_32 interlace_type = 0;
+    png_uint_32 compression_type = 0;
+    png_uint_32 filter_type = 0;
+    png_uint_32 rowbytes = 0;
 };
 
 class PngReadStruct;

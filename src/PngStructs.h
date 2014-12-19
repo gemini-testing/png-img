@@ -4,8 +4,8 @@
 #include <png.h>
 #include <functional>
 
-typedef std::function<png_structp(png_const_charp, png_voidp, png_error_ptr, png_error_ptr)> PngStructConstructor;
-typedef std::function<void(png_structpp, png_infopp)> PngStructDestructor;
+using PngStructConstructor = std::function<png_structp(png_const_charp, png_voidp, png_error_ptr, png_error_ptr)>;
+using PngStructDestructor = std::function<void(png_structpp, png_infopp)>;
 
 ///
 class PngStruct {
