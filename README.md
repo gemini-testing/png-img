@@ -1,6 +1,8 @@
 png-img
 =======
 
+[![Build Status](https://travis-ci.org/bem/png-img.svg)](https://travis-ci.org/bem/png-img)
+
 Lite self-contained png image processing library for OS X and Linux.
 
 ## Installation
