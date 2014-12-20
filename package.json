@@ -6,6 +6,16 @@
   "engines": {
     "node": "0.10.x"
   },
+  "files": [
+    "compiled/darwin/x64/png_img.node",
+    "compiled/linux/ia32/png_img.node",
+    "compiled/linux/x64/png_img.node",
+    "compiled/win32/ia32/png_img.node",
+    "compiled/win32/x64/png_img.node",
+    "index.js",
+    "package.json",
+    "README.md"
+  ],
   "dependencies": {
     "nan": "~1.3.0",
     "inherit": "~2.2.2"
@@ -17,7 +27,8 @@
   },
   "scripts": {
     "test": "./dev/test",
-    "build": "cd dev && ./compile"
+    "build": "cd dev && ./compile",
+    "prepublish": "node dev/prepublish.js"
   },
   "author": "Anton Usmansky <anton.usmansky@gmail.com> (https://github.com/j0tunn)",
   "license": "MIT",
