@@ -1,6 +1,7 @@
 'use strict';
 
 var PngImg = require('../'),
+    RGBToString = require('../utils').RGBToString,
     fs = require('fs'),
     path = require('path'),
     demand = require('must'),
@@ -67,7 +68,7 @@ describe('crop', function() {
         }).must.throw();
     });
 
-    it('should throw if topLeft outside of the image', function() {
+    it('should throw if offsetX outside of the image', function() {
         (function() {
             return img.crop(img.size().width, img.size().height, 1, 1);
         }).must.throw();
@@ -178,5 +179,175 @@ describe('get', function() {
         r.r.must.be(255); r.g.must.be(0); r.b.must.be(0); r.a.must.be(255);
         g.r.must.be(0); g.g.must.be(255); g.b.must.be(0); g.a.must.be(255);
         b.r.must.be(0); b.g.must.be(0); b.b.must.be(255); b.a.must.be(255);
+    });
+});
+
+describe('fill', function() {
+    var rgbaTestRawImg = fs.readFileSync(path.join(__dirname, 'rgba4x1.png')),
+        cyan = '#00ffff',
+        img;
+
+    beforeEach(function() {
+        img = new PngImg(rgbaTestRawImg);
+    });
+
+    it('should throw if offsetX out of the bounds', function() {
+        (function(){
+            img.fill(img.size().width, 0, 1, 1, cyan);
+        }).must.throw();
+    });
+
+    it('should throw if offsetY out of the bounds', function() {
+        (function(){
+            img.fill(0, img.size().height, 1, 1, cyan);
+        }).must.throw();
+    });
+
+    it('should throw if zero width or height passed', function() {
+        (function(){
+            return img.fill(0, 0, 0, 0, cyan);
+        }).must.throw();
+    });
+
+    it('should treat bad width or height as zeroes', function() {
+        (function(){
+            img.fill(0, 0, null, [], cyan);
+        }).must.throw();
+    });
+
+    it('should throw if fill region is too big', function() {
+        (function() {
+            img.fill(0, 0, img.size().width + 1, img.size().height + 1, cyan);
+        }).must.throw();
+    });
+
+    it('should treat bad offset as zeroes', function() {
+        img.fill('adsf', {}, 1, 1, cyan);
+        RGBToString(img.get(0, 0)).must.be(cyan);
+    });
+
+    it('should throw if bad color passed', function() {
+        (function(){
+            return img.fill(0, 0, 1, 1, 'asdf');
+        }).must.throw();
+    });
+
+    it('should fill with black if empty color object passed', function() {
+        img.fill(0, 0, 1, 1, {});
+        RGBToString(img.get(0, 0)).must.be('#000000');
+    });
+
+    it('should fill with color passed as rgb object', function() {
+        var white = {r: 255, g: 255, b: 255, a: 255};
+        img.fill(0, 0, 1, 1, white);
+        img.get(0, 0).must.eql(white);
+    });
+
+    it('should fill with color passed as string', function() {
+        var white = '#ffffff';
+        img.fill(0, 0, 1, 1, white);
+        RGBToString(img.get(0, 0)).must.be(white);
+    });
+
+    it('should fill using alpha', function() {
+        var transparentWhite = {r: 255, g: 255, b: 255, a: 50};
+        img.fill(0, 0, 1, 1, transparentWhite);
+        img.get(0, 0).must.eql(transparentWhite);
+    });
+
+    it('should ignore alpha in image without alpha', function() {
+        var noAlphaRaw = fs.readFileSync(path.join(__dirname, 'rgb3x1_noalpha.png')),
+            noAlphaImg = new PngImg(noAlphaRaw),
+            transparentWhite = {r: 255, g: 255, b: 255, a: 50};
+
+        noAlphaImg.fill(0, 0, 1, 1, transparentWhite);
+        noAlphaImg.get(0, 0).a.must.be(255);
+    });
+
+    it('should fill few rows/columns correctly', function() {
+        var bigImg = new PngImg(rawImg),
+            offsetX = 8,
+            offsetY = 8,
+            width = 16,
+            height = 16;
+
+        bigImg.fill(offsetX, offsetY, width, height, cyan);
+        for(var i = 0; i < bigImg.size().width; ++i) {
+            for(var j = 0; j < bigImg.size().height; ++j) {
+                var pxl = RGBToString(bigImg.get(i, j));
+                if(i < offsetX || j < offsetY || i >= offsetX + width || j >= offsetY + height) {
+                    pxl.must.not.be(cyan);
+                } else {
+                    pxl.must.be(cyan);
+                }
+            }
+        }
+    });
+
+    it('should return this object', function() {
+        img.fill(0, 0, 1, 1, cyan).must.be(img);
+    });
+});
+
+describe('set', function() {
+    var rgbaTestRawImg = fs.readFileSync(path.join(__dirname, 'rgba4x1.png')),
+        img;
+
+    beforeEach(function() {
+        img = new PngImg(rgbaTestRawImg);
+    });
+
+    it('should throw if x out of the bounds', function() {
+        (function(){
+            return img.set(5, 0, '#ffffff');
+        }).must.throw();
+    });
+
+    it('should throw if y out of the bounds', function() {
+        (function(){
+            return img.set(0, 1, '#ffffff');
+        }).must.throw();
+    });
+
+    it('should throw if bad color passed', function() {
+        (function(){
+            return img.set(0, 0, 'asdf');
+        }).must.throw();
+    });
+
+    it('should set black if empty color object passed', function() {
+        img.set(0, 0, {});
+        RGBToString(img.get(0, 0)).must.be('#000000');
+    });
+
+    it('should set color passed as rgb object', function() {
+        var white = {r: 255, g: 255, b: 255, a: 255};
+        img.set(0, 0, white);
+        img.get(0, 0).must.eql(white);
+    });
+
+    it('should set color passed as string', function() {
+        var white = '#ffffff';
+        img.set(0, 0, white);
+        RGBToString(img.get(0, 0)).must.be(white);
+    });
+
+    it('should set alpha too', function() {
+        var transparentWhite = {r: 255, g: 255, b: 255, a: 50};
+        img.set(0, 0, transparentWhite);
+        img.get(0, 0).must.eql(transparentWhite);
+    });
+
+    it('should ignore alpha in image without alpha', function() {
+        var noAlphaRaw = fs.readFileSync(path.join(__dirname, 'rgb3x1_noalpha.png')),
+            noAlphaImg = new PngImg(noAlphaRaw),
+            transparentWhite = {r: 255, g: 255, b: 255, a: 50};
+
+        noAlphaImg.set(0, 0, transparentWhite);
+        noAlphaImg.get(0, 0).a.must.be(255);
+    });
+
+    it('should return this object', function() {
+        img.set(0, 0, '#ffffff').must.be(img);
     });
 });

@@ -3,7 +3,6 @@
 
 #include <node_buffer.h>
 #include <png.h>
-#include <functional>
 
 using namespace v8;
 using namespace std;
@@ -21,6 +20,7 @@ void PngImgAdapter::Init() {
     tpl->InstanceTemplate()->SetAccessor(String::New("height"), PngImgAdapter::Height);
 
     NODE_SET_PROTOTYPE_METHOD(tpl, "get", PngImgAdapter::Get);
+    NODE_SET_PROTOTYPE_METHOD(tpl, "fill", PngImgAdapter::Fill);
     NODE_SET_PROTOTYPE_METHOD(tpl, "crop", PngImgAdapter::Crop);
     NODE_SET_PROTOTYPE_METHOD(tpl, "write", PngImgAdapter::Write);
 }
@@ -66,20 +66,20 @@ Handle<Value> PngImgAdapter::New(const Arguments& args) {
 }
 
 ///
-Local<Number> GetProperty(const AccessorInfo& info, std::function<unsigned(const PngImgAdapter&)> getter) {
-    HandleScope scope;
-    PngImgAdapter* img = node::ObjectWrap::Unwrap<PngImgAdapter>(info.Holder());
-    return scope.Close(Number::New(getter(*img)));
-}
-
-///
 Handle<Value> PngImgAdapter::Width(Local<String>, const AccessorInfo& info) {
-    return GetProperty(info, [](const PngImgAdapter& adapter) { return adapter.img_.Width(); });
+    return GetProperty(info, [](const PngImg& img) { return img.Width(); });
 }
 
 ///
 Handle<Value> PngImgAdapter::Height(Local<String>, const AccessorInfo& info) {
-    return GetProperty(info, [](const PngImgAdapter& adapter) { return adapter.img_.Height(); });
+    return GetProperty(info, [](const PngImg& img) { return img.Height(); });
+}
+
+///
+Local<Number> PngImgAdapter::GetProperty(const AccessorInfo& info, function<unsigned(const PngImg&)> getter) {
+    HandleScope scope;
+    PngImg& img = node::ObjectWrap::Unwrap<PngImgAdapter>(info.Holder())->img_;
+    return scope.Close(Number::New(getter(img)));
 }
 
 ///
@@ -102,17 +102,53 @@ Handle<Value> PngImgAdapter::Get(const Arguments& args) {
 }
 
 ///
+Pxl RGBObjToPxl(const Local<Object>& obj) {
+    HandleScope scope;
+
+    auto getIntVal_ = [&obj](const string& key) {
+        String::Utf8Value val(obj->Get(String::NewSymbol(key.c_str())));
+        return stoi(*val);
+    };
+
+    Pxl pxl;
+    pxl.r = getIntVal_("r");
+    pxl.g = getIntVal_("g");
+    pxl.b = getIntVal_("b");
+    pxl.a = getIntVal_("a");
+    return pxl;
+}
+
+///
+Handle<Value> PngImgAdapter::Fill(const Arguments& args) {
+    return Call(args, [&args](PngImg& img) {
+        return img.Fill(
+            args[0]->Uint32Value(),
+            args[1]->Uint32Value(),
+            args[2]->Uint32Value(),
+            args[3]->Uint32Value(),
+            RGBObjToPxl(args[4].As<Object>())
+        );
+    });
+}
+
+///
 Handle<Value> PngImgAdapter::Crop(const Arguments& args) {
+    return Call(args, [&args](PngImg& img) {
+        return img.Crop(
+            args[0]->Uint32Value(),
+            args[1]->Uint32Value(),
+            args[2]->Uint32Value(),
+            args[3]->Uint32Value()
+        );
+    });
+}
+
+///
+Handle<Value> PngImgAdapter::Call(const Arguments& args, function<bool(PngImg&)> fn) {
     HandleScope scope;
 
     PngImg& img = node::ObjectWrap::Unwrap<PngImgAdapter>(args.This())->img_;
-    const bool ok = img.Crop(
-        args[0]->Uint32Value(),
-        args[1]->Uint32Value(),
-        args[2]->Uint32Value(),
-        args[3]->Uint32Value()
-    );
-
+    const bool ok = fn(img);
     if(!ok) {
         return ThrowException(String::New(img.LastError().c_str()));
     }

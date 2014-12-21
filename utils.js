@@ -18,7 +18,7 @@ exports.RGBToString = function(rgb) {
  * @param {String} string '#XXXXXX' string
  * @return {Object} rgb object {r:Number, g:Number, b:Number}
  */
-exports.StringToRGBA = function(string) {
+exports.stringToRGBA = function(string) {
     var match = string.match(/^#([0-9a-f]{2})([0-9a-f]{2})([0-9a-f]{2})$/i);
     if(!match) {
         return null;

@@ -19,19 +19,19 @@ describe('utils', function() {
     });
 
     describe('StringToRGB', function() {
-        var StringToRGBA = utils.StringToRGBA;
+        var stringToRGBA = utils.stringToRGBA;
 
         it('should convert "#XXXXXX" string to rgb object', function() {
-            StringToRGBA('#ffffff').must.eql({r: 255, g: 255, b: 255, a: 255});
-            StringToRGBA('#000000').must.eql({r: 0, g: 0, b: 0, a: 255});
+            stringToRGBA('#ffffff').must.eql({r: 255, g: 255, b: 255, a: 255});
+            stringToRGBA('#000000').must.eql({r: 0, g: 0, b: 0, a: 255});
         });
 
         it('should ignore case', function() {
-            StringToRGBA('#FfFFfF').must.eql({r: 255, g: 255, b: 255, a: 255});
+            stringToRGBA('#FfFFfF').must.eql({r: 255, g: 255, b: 255, a: 255});
         });
 
         it('should return null on bad string', function() {
-            demand(StringToRGBA('asdf')).be(null);
+            demand(stringToRGBA('asdf')).be(null);
         });
     });
 });

@@ -88,16 +88,41 @@ unique_ptr<Pxl> PngImg::Get(png_uint_32 x, png_uint_32 y) const
 }
 
 ///
+bool PngImg::Fill(png_uint_32 offsetX, png_uint_32 offsetY, png_uint_32 width, png_uint_32 height, const Pxl& pxl)
+{
+    if(!InBounds_(offsetX, offsetY, width, height))
+    {
+        error_ = "Out of the bounds";
+        return false;
+    }
+
+    for(size_t i = 0; i < height; ++i) {
+        for(size_t j = 0; j < width; ++j) {
+            Set_(offsetX + j, offsetY + i, pxl);
+        }
+    }
+
+    return true;
+}
+
+///
+void PngImg::Set_(png_uint_32 x, png_uint_32 y, const Pxl& pxl)
+{
+    png_bytep p = rowPtrs_[y] + info_.pxlsize * x;
+    p[0] = pxl.r;
+    p[1] = pxl.g;
+    p[2] = pxl.b;
+    if(info_.pxlsize > 3) {
+        p[3] = pxl.a;
+    }
+}
+
+///
 bool PngImg::Crop(png_uint_32 offsetX, png_uint_32 offsetY, png_uint_32 width, png_uint_32 height)
 {
-    if(offsetX >= info_.width
-    || offsetY >= info_.height
-    || width == 0
-    || height == 0
-    || offsetX + width > info_.width
-    || offsetY + height > info_.height)
+    if(!InBounds_(offsetX, offsetY, width, height))
     {
-        error_ = "Bad arguments";
+        error_ = "Out of the bounds";
         return false;
     }
 
@@ -109,6 +134,15 @@ bool PngImg::Crop(png_uint_32 offsetX, png_uint_32 offsetY, png_uint_32 width, p
     info_.height = height;
     info_.rowbytes = info_.pxlsize * width;
     return true;
+}
+
+///
+bool PngImg::InBounds_(png_uint_32 offsetX, png_uint_32 offsetY, png_uint_32 width, png_uint_32 height) const
+{
+    return width != 0
+        && height != 0
+        && offsetX + width <= info_.width
+        && offsetY + height <= info_.height;
 }
 
 ///

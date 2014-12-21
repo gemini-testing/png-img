@@ -1,6 +1,7 @@
 'use strict';
 
-var inherit = require('inherit'),
+var utils = require('./utils'),
+    inherit = require('inherit'),
     path = require('path'),
     PngImg = require('./' + path.join('compiled', process.platform, process.arch, 'png_img')).PngImg;
 
@@ -26,6 +27,45 @@ module.exports = inherit({
      */
     get: function(x, y) {
         return this.img_.get(x, y);
+    },
+
+    /**
+     * Set pixel color
+     * @param {Number} x x coordinate (left to right)
+     * @param {Number} y y coordinate (top to bottom)
+     * @param {Object|String} color as rgb object or as a '#XXXXXX' string
+     */
+    set: function(x, y, color) {
+        return this.fill(x, y, 1, 1, color);
+    },
+
+    /**
+     * Fill region with some color
+     * @param {Number} offsetX offset from left side of the image
+     * @param {Number} offsetY offset from top side of the image
+     * @param {Number} width
+     * @param {Number} height
+     * @param {Object|String} color as rgb object or as a '#XXXXXX' string
+     */
+    fill: function(offsetX, offsetY, width, height, color) {
+        if(typeof color === 'string') {
+            var objColor = utils.stringToRGBA(color);
+            if(!objColor) {
+                throw new Error('Bad color ' + color);
+            }
+
+            return this.fill(offsetX, offsetY, width, height, objColor);
+        }
+
+        color = {
+            r: color.r || 0,
+            g: color.g || 0,
+            b: color.b || 0,
+            a: color.a === undefined ? 255 : color.a
+        };
+
+        this.img_.fill(offsetX, offsetY, width, height, color);
+        return this;
     },
 
     ///
