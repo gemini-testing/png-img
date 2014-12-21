@@ -1,5 +1,6 @@
 dev/build/
 dev/third_party/
+compiled/
 node_modules
 .vagrant
 win.box
