@@ -56,6 +56,28 @@ will print pixel and color for pixel (0, 0):
 }
 ```
 
+### fill(offsetX, offsetY, widht, height, color)
+Fill region with passed color. Modifies current image.
+
+Arguments:
+ * `offsetX` - horizontal offset from the left side of the image
+ * `offsetY` - vertical offset from the top side of the image
+ * `width` - region width
+ * `height` - region height
+ * `color` - color as {r,g,b,a} object or as a '#XXXXXX' string
+
+Returns: current image object
+
+Throws if region is not inside the current image
+```js
+img
+  .fill(0, 0, 16, 16, '#00ffFF') // fill with cyan
+  .fill(16, 16, 16, 16, {r: 0, g: 255, b: 255, a: 127}); // fill with half-transparent cyan
+```
+
+### set(x, y, color)
+Same as `fill(x, y, 1, 1, color)`
+
 ### crop(offsetX, offsetY, widht, height)
 Crop image. Modifies current image.
 

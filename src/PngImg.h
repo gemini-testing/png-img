@@ -38,12 +38,15 @@ public:
     std::string LastError() const { return error_; }
 
     std::unique_ptr<Pxl> Get(png_uint_32 x, png_uint_32 y) const;
+    bool Fill(png_uint_32 offsetX, png_uint_32 offsetY, png_uint_32 width, png_uint_32 height, const Pxl& pxl);
     bool Crop(png_uint_32 offsetX, png_uint_32 offsetY, png_uint_32 width, png_uint_32 height);
     bool Write(const std::string& file);
 
 private:
     void ReadInfo_(PngReadStruct& readStruct);
     void ReadImg_(PngReadStruct& readStruct);
+    bool InBounds_(png_uint_32 offsetX, png_uint_32 offsetY, png_uint_32 width, png_uint_32 height) const;
+    void Set_(png_uint_32 x, png_uint_32 y, const Pxl& pxl);
 
     ImgInfo info_;
     png_bytep* rowPtrs_;
