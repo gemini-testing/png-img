@@ -13,6 +13,7 @@
     "compiled/win32/ia32/png_img.node",
     "compiled/win32/x64/png_img.node",
     "index.js",
+    "utils.js",
     "package.json",
     "README.md"
   ],
