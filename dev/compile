@@ -8,25 +8,6 @@ ROOT=$(cd $(dirname $0)/../; pwd)
 OUT_DIR=${ROOT}/compiled/${PLATFORM}
 
 ##
-gypRebuild() {
-    local arch=${1}
-    local buildArch=${arch//[a-z]/}
-    local nodeGyp=${ROOT}/node_modules/.bin/node-gyp
-    if [ "${PLATFORM}" = "win32" ]
-    then
-        # Workaround: don't build debug info
-        # Avoid "incorrect MSPDB120.DLL version" linker error
-        # https://github.com/TooTallNate/node-gyp/issues/551
-        ${nodeGyp} clean
-        BUILD_ARCH=${buildArch} ${nodeGyp} configure --arch=${arch}
-        sed -i"" -e 's;<GenerateDebugInformation>true;<GenerateDebugInformation>false;g' build/png_img.vcxproj
-        ${nodeGyp} build
-    else
-        BUILD_ARCH=${buildArch} ${nodeGyp} rebuild --arch=${arch}
-    fi
-}
-
-##
 build() {
     local archs=${ARCH}
     [ "${PLATFORM}" = "darwin" ] || [ "$ARCH" = "ia32" -a "${PLATFORM}" != "win32" ] || archs="x64 ia32"
@@ -35,7 +16,7 @@ build() {
     do
         echo "Build for ${PLATFORM} ${arch}"
 
-        gypRebuild ${arch}
+        BUILD_ARCH=${arch//[a-z]/} ${ROOT}/node_modules/.bin/node-gyp rebuild --arch=${arch}
 
         target=build/Release/png_img.node
         [ "${PLATFORM}" != "win32" ] && strip -Sx ${target}
