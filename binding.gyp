@@ -1,6 +1,6 @@
 {
   "variables": {
-    "src_dir": "../src"
+    "src_dir": "./src"
   },
   "targets": [
     {
@@ -14,7 +14,7 @@
         "<!(node -e \"require('nan')\")",
       ],
       "dependencies": [
-        "../third_party/libpng/libpng.gyp:libpng"
+        "./third_party/libpng/libpng.gyp:libpng"
       ],
       "conditions": [
         [ "OS=='mac'", {

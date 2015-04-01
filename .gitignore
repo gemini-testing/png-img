@@ -1,7 +1,5 @@
-dev/build/
-dev/third_party/
-compiled/
-node_modules
+/build/
+/node_modules/
 .vagrant
 win.box
 npm-debug.log
