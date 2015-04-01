@@ -2,8 +2,7 @@
 
 var utils = require('./utils'),
     inherit = require('inherit'),
-    path = require('path'),
-    PngImg = require('./' + path.join('compiled', process.platform, process.arch, 'png_img')).PngImg;
+    PngImg = require('./build/Release/png_img').PngImg;
 
 module.exports = inherit({
     ///

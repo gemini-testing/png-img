@@ -3,24 +3,35 @@
 ROOT=$(cd $(dirname $0)/../; pwd)
 
 ##
+genExcludes() {
+    local excludes=`cat ${ROOT}/.gitignore | awk '{ print "--exclude="$1 }' | tr "\n" " "`
+    excludes="$excludes --exclude=.git"
+    echo $excludes
+}
+
+##
 testOn() {
     local os=$1
     case $os in
         lin*)
             echo "Test on Ubuntu"
+            local excludes=`genExcludes`
             vagrant ssh linux -c "\
+                rsync -av --delete-after --delete-excluded ${excludes} /vagrant/* ./png-img && \
                 cd png-img && \
-                rsync -av --delete-after /vagrant/test/* ./test/ && \
+                npm install && \
                 npm test \
                 "
             ;;
         win*)
             echo "Test on Windows"
+            local excludes=`genExcludes`
             # in ssh session './dev/test' prints only part of output,
             # so we need a workaround to print the whole output
             vagrant ssh win -c "\
+                rsync -av --delete-after --delete-excluded ${excludes} /cygdrive/c/vagrant/* ./png-img && \
                 cd png-img && \
-                rsync -av --delete-after /cygdrive/c/vagrant/test/* ./test/ && \
+                npm install && \
                 ./dev/test 2>&1 | cat \
                 "
             ;;
