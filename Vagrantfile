@@ -1,4 +1,9 @@
 Vagrant.configure(2) do |config|
+    config.vm.define "linux-old" do |linux|
+        linux.vm.box = "ubuntu/precise32"
+        linux.vm.provision :shell, path: "dev/ubuntu12.04_bootstrap.sh"
+    end
+
     config.vm.define "linux" do |linux|
         linux.vm.box = "ubuntu/trusty64"
         linux.vm.provision :shell, path: "dev/ubuntu_bootstrap.sh"

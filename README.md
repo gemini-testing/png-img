@@ -136,9 +136,10 @@ Tested with `vagrant 1.7` and `VirtualBox 4.3`.
 
 1. Install `vagrant` and `VirtualBox`.
 2. Create windows vagrant box (see [howto](dev/vagrant-win-box.md))
-3. Run `vagrant up`
+3. Run `vagrant up --provider virtualbox`
 4. Specify `OS` env variable to run and test on specific platform:
   - `npm run build`, `npm test` - current platform
-  - `OS=linux npm run build`, `OS=linux npm test` - linux
-  - `OS=win npm run build`, `OS=win npm test` - windows
-  - `OS=all npm run build`, `OS=all npm test` - current, linux, windows
+  - `OS=linux npm test` - Ubuntu 14.04
+  - `OS=linux-old npm test` - Ubuntu 12.04
+  - `OS=win npm test` - windows
+  - `OS=all npm test` - all
