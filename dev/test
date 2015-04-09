@@ -16,7 +16,8 @@ testOn() {
         lin*)
             echo "Test on Ubuntu"
             local excludes=`genExcludes`
-            vagrant ssh linux -c "\
+            vagrant ssh $os -c "\
+                grep 'DISTRIB_RELEASE' /etc/lsb-release | sed 's/.*=//' &&
                 rsync -av --delete-after --delete-excluded ${excludes} /vagrant/* ./png-img && \
                 cd png-img && \
                 npm install && \
