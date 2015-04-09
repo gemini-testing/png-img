@@ -25,7 +25,7 @@
             }
         }],
         [ "OS=='linux'", {
-            "cflags": ["-std=c++11"]
+            "cflags": ["-std=c++0x"]
         }],
         [ "OS=='win'", {
           "msvs_settings": {

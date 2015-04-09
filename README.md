@@ -117,7 +117,7 @@ img.save('path/to/file.png', function(error) {
 
 
 ## Dev environment requirements
-Linux: Depends on GCC 4.7 or later
+Linux: Depends on GCC 4.6 or later
 
 OS X: Tested with Xcode 6.0 development tools (but should be ok with Xcode 5.0 also)
 

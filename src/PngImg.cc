@@ -26,6 +26,7 @@ PngImg::PngImg(const char* buf, const size_t bufLen)
     : rowPtrs_(nullptr)
     , data_(nullptr)
 {
+    memset(&info_, 0, sizeof(info_));
     PngReadStruct readStruct;
     if(readStruct.Valid()) {
         BufPtr bufPtr = {buf, bufLen};
@@ -78,7 +79,7 @@ unique_ptr<Pxl> PngImg::Get(png_uint_32 x, png_uint_32 y) const
     }
 
     png_bytep p = rowPtrs_[y] + info_.pxlsize * x;
-    unique_ptr<Pxl> pPxl(new Pxl{});
+    unique_ptr<Pxl> pPxl(new Pxl{0, 0, 0, 0});
     pPxl->r = p[0];
     pPxl->g = p[1];
     pPxl->b = p[2];
