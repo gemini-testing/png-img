@@ -23,10 +23,10 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/bem/png-img.git"
+    "url": "https://github.com/gemini-testing/png-img.git"
   },
   "bugs": {
-    "url": "https://github.com/bem/png-img/issues"
+    "url": "https://github.com/gemini-testing/png-img/issues"
   },
-  "homepage": "https://github.com/bem/png-img"
+  "homepage": "https://github.com/gemini-testing/png-img"
 }
