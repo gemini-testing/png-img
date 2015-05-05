@@ -43,9 +43,15 @@ describe('crop', function() {
         img = new PngImg(rawImg);
     });
 
-    it('should throw if negative args passed', function() {
+    it('should throw if negative width/height passed, but positive offset', function() {
         (function(){
-            return img.crop(-1, -1, -1, -1);
+            return img.crop(10, 10, -1, -1);
+        }).must.throw();
+    });
+
+    it('should throw if negative offset passed, but positive width/height', function() {
+        (function(){
+            return img.crop(-1, -1, 10, 10);
         }).must.throw();
     });
 

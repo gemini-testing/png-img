@@ -7,7 +7,7 @@
     "node": ">= 0.10.x"
   },
   "dependencies": {
-    "nan": "~1.7.0",
+    "nan": "~1.8.4",
     "inherit": "~2.2.2"
   },
   "devDependencies": {
