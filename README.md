@@ -5,6 +5,13 @@ png-img
 
 Lite self-contained png image processing library for OS X and Linux.
 
+## Requirements
+Linux: Depends on GCC 4.6 or later
+
+OS X: Tested with Xcode 6.0 development tools (but should be ok with Xcode 5.0 also)
+
+Windows: Tested with MSVC 2013 Express
+
 ## Installation
 ```
 npm install png-img
@@ -114,14 +121,6 @@ img.save('path/to/file.png', function(error) {
     }
 });
 ```
-
-
-## Dev environment requirements
-Linux: Depends on GCC 4.6 or later
-
-OS X: Tested with Xcode 6.0 development tools (but should be ok with Xcode 5.0 also)
-
-Windows: Tested on MSVC 2013 Express
 
 ## Build
 ```
