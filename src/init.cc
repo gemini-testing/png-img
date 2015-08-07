@@ -2,12 +2,12 @@
 #include "./PngImgAdapter.h"
 
 using namespace v8;
+using namespace Nan;
 
 ///
-void InitAll(Handle<Object> exports) {
+NAN_MODULE_INIT(InitAll) {
     PngImgAdapter::Init();
-
-    exports->Set(NanNew<String>("PngImg"), NanNew<FunctionTemplate>(PngImgAdapter::NewInstance)->GetFunction());
+    Set(target, New<String>("PngImg").ToLocalChecked(), New<FunctionTemplate>(PngImgAdapter::NewInstance)->GetFunction());
 }
 
 NODE_MODULE(png_img, InitAll)
