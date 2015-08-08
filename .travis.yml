@@ -9,6 +9,11 @@ env:
   - CXX=g++-4.8
   - CXX=g++-4.6
 
+matrix:
+  exclude:
+    - node_js: 'iojs'
+      env: CXX=g++-4.6
+
 before_install: |
   if [ "$CXX" = "g++-4.8" ]; then
     sudo add-apt-repository ppa:ubuntu-toolchain-r/test -y
