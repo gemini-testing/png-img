@@ -8,12 +8,12 @@ class PngImg;
 
 ///
 class SaveWorker
-    : public NanAsyncWorker
+    : public Nan::AsyncWorker
 {
 public:
     ///
-    SaveWorker(NanCallback* cb, PngImg& img, std::string file)
-        : NanAsyncWorker(cb)
+    SaveWorker(Nan::Callback* cb, PngImg& img, std::string file)
+        : Nan::AsyncWorker(cb)
         , img_(img)
         , file_(file)
     {}

@@ -6,104 +6,95 @@
 
 using namespace v8;
 using namespace std;
+using namespace Nan;
 
-static Persistent<FunctionTemplate> pngImgAdapterConstructor;
+static Nan::Persistent<FunctionTemplate> pngImgAdapterConstructor;
 
 ///
 void PngImgAdapter::Init() {
-    Local<FunctionTemplate> tpl = NanNew<FunctionTemplate>(PngImgAdapter::New);
-    NanAssignPersistent(pngImgAdapterConstructor, tpl);
+    Local<FunctionTemplate> tpl = Nan::New<FunctionTemplate>(PngImgAdapter::New);
+    pngImgAdapterConstructor.Reset(tpl);
 
-    tpl->SetClassName(NanNew<String>("PngImg"));
+    tpl->SetClassName(Nan::New<String>("PngImg").ToLocalChecked());
     tpl->InstanceTemplate()->SetInternalFieldCount(1);
-    tpl->InstanceTemplate()->SetAccessor(NanNew<String>("width"), PngImgAdapter::Width);
-    tpl->InstanceTemplate()->SetAccessor(NanNew<String>("height"), PngImgAdapter::Height);
 
-    NODE_SET_PROTOTYPE_METHOD(tpl, "get", PngImgAdapter::Get);
-    NODE_SET_PROTOTYPE_METHOD(tpl, "fill", PngImgAdapter::Fill);
-    NODE_SET_PROTOTYPE_METHOD(tpl, "crop", PngImgAdapter::Crop);
-    NODE_SET_PROTOTYPE_METHOD(tpl, "write", PngImgAdapter::Write);
+    SetAccessor(tpl->InstanceTemplate(), Nan::New<String>("width").ToLocalChecked(), PngImgAdapter::Width);
+    SetAccessor(tpl->InstanceTemplate(), Nan::New<String>("height").ToLocalChecked(), PngImgAdapter::Height);
+
+    SetPrototypeMethod(tpl, "get", PngImgAdapter::Get);
+    SetPrototypeMethod(tpl, "fill", PngImgAdapter::Fill);
+    SetPrototypeMethod(tpl, "crop", PngImgAdapter::Crop);
+    SetPrototypeMethod(tpl, "write", PngImgAdapter::Write);
 }
 
 ///
 NAN_METHOD(PngImgAdapter::NewInstance) {
-    NanScope();
-
-    if(!args.IsConstructCall()) {
-        return NanThrowError("Cannot call constructor as function");
+    if(!info.IsConstructCall()) {
+        return ThrowError("Cannot call constructor as function");
     }
 
-    if(args.Length() < 1) {
-        return NanThrowError("To few arguments");
+    if(info.Length() < 1) {
+        return ThrowError("To few arguments");
     }
 
-    if(!node::Buffer::HasInstance(args[0])) {
-        return NanThrowError("First argument should be a buffer");
+    if(!node::Buffer::HasInstance(info[0])) {
+        return ThrowError("First argument should be a buffer");
     }
 
-    Local<Object> imgBuffer = args[0].As<Object>();
+    Local<FunctionTemplate> constructorHandle = Nan::New(pngImgAdapterConstructor);
+    Local<Object> imgBuffer = info[0].As<Object>();
     Handle<Value> argv[] = { imgBuffer };
-
-    Local<FunctionTemplate> constructorHandle = NanNew(pngImgAdapterConstructor);
-    NanReturnValue(constructorHandle->GetFunction()->NewInstance(1, argv));
+    info.GetReturnValue().Set(constructorHandle->GetFunction()->NewInstance(1, argv));
 }
 
 ///
 NAN_METHOD(PngImgAdapter::New) {
-    NanScope();
-
-    Local<Object> imgBuffer = args[0].As<Object>();
+    Local<Object> imgBuffer = info[0].As<Object>();
     const char* buf = node::Buffer::Data(imgBuffer);
     const size_t bufLen = node::Buffer::Length(imgBuffer);
 
     const size_t SIG_LEN = 8;
     if(bufLen < SIG_LEN || png_sig_cmp((png_const_bytep)buf, 0, SIG_LEN)) {
-        return NanThrowError("Not a PNG");
+        return ThrowError("Not a PNG");
     }
 
     PngImgAdapter* obj = new PngImgAdapter(buf, bufLen);
-    obj->Wrap(args.This());
+    obj->Wrap(info.This());
 
-    NanReturnThis();
+    info.GetReturnValue().Set(info.This());
 }
 
 ///
 NAN_PROPERTY_GETTER(PngImgAdapter::Width) {
-    NanScope();
-    NanReturnValue(NanNew<Number>(GetObj(args)->img_.Width()));
+    info.GetReturnValue().Set(Nan::New<Number>(GetObj(info)->img_.Width()));
 }
 
 ///
 NAN_PROPERTY_GETTER(PngImgAdapter::Height) {
-    NanScope();
-    NanReturnValue(NanNew<Number>(GetObj(args)->img_.Height()));
+    info.GetReturnValue().Set(Nan::New<Number>(GetObj(info)->img_.Height()));
 }
 
 ///
 NAN_METHOD(PngImgAdapter::Get) {
-    NanScope();
-
-    PngImg& img = GetObj(args)->img_;
-    auto pPxl = img.Get(args[0]->Uint32Value(), args[1]->Uint32Value());
+    PngImg& img = GetObj(info)->img_;
+    auto pPxl = img.Get(info[0]->Uint32Value(), info[1]->Uint32Value());
     if(!pPxl) {
-       return NanThrowError(img.LastError().c_str());
+       return ThrowError(img.LastError().c_str());
     }
 
-    Local<Object> obj = NanNew<Object>();
-    obj->Set(NanNew<String>("r"), NanNew<Number>(pPxl->r));
-    obj->Set(NanNew<String>("g"), NanNew<Number>(pPxl->g));
-    obj->Set(NanNew<String>("b"), NanNew<Number>(pPxl->b));
-    obj->Set(NanNew<String>("a"), NanNew<Number>(pPxl->a));
+    Local<Object> obj = Nan::New<Object>();
+    obj->Set(Nan::New<String>("r").ToLocalChecked(), Nan::New<Number>(pPxl->r));
+    obj->Set(Nan::New<String>("g").ToLocalChecked(), Nan::New<Number>(pPxl->g));
+    obj->Set(Nan::New<String>("b").ToLocalChecked(), Nan::New<Number>(pPxl->b));
+    obj->Set(Nan::New<String>("a").ToLocalChecked(), Nan::New<Number>(pPxl->a));
 
-    NanReturnValue(obj);
+    info.GetReturnValue().Set(obj);
 }
 
 ///
 Pxl RGBObjToPxl(const Local<Object>& obj) {
-    NanScope();
-
     auto getIntVal_ = [&obj](const string& key) {
-        String::Utf8Value val(obj->Get(NanNew<String>(key.c_str())));
+        String::Utf8Value val(obj->Get(Nan::New<String>(key.c_str()).ToLocalChecked()));
         return stoi(*val);
     };
 
@@ -117,51 +108,45 @@ Pxl RGBObjToPxl(const Local<Object>& obj) {
 
 ///
 NAN_METHOD(PngImgAdapter::Fill) {
-    NanScope();
-
-    PngImg& img = GetObj(args)->img_;
+    PngImg& img = GetObj(info)->img_;
     const bool ok = img.Fill(
-        args[0]->Uint32Value(),
-        args[1]->Uint32Value(),
-        args[2]->Uint32Value(),
-        args[3]->Uint32Value(),
-        RGBObjToPxl(args[4].As<Object>())
+        info[0]->Uint32Value(),
+        info[1]->Uint32Value(),
+        info[2]->Uint32Value(),
+        info[3]->Uint32Value(),
+        RGBObjToPxl(info[4].As<Object>())
     );
     if(!ok) {
-        return NanThrowError(img.LastError().c_str());
+        return ThrowError(img.LastError().c_str());
     }
 
-    NanReturnUndefined();
+    info.GetReturnValue().SetUndefined();
 }
 
 ///
 NAN_METHOD(PngImgAdapter::Crop) {
-    NanScope();
-
-    PngImg& img = GetObj(args)->img_;
+    PngImg& img = GetObj(info)->img_;
     const bool ok = img.Crop(
-        args[0]->Uint32Value(),
-        args[1]->Uint32Value(),
-        args[2]->Uint32Value(),
-        args[3]->Uint32Value()
+        info[0]->Uint32Value(),
+        info[1]->Uint32Value(),
+        info[2]->Uint32Value(),
+        info[3]->Uint32Value()
     );
     if(!ok) {
-        return NanThrowError(img.LastError().c_str());
+        return ThrowError(img.LastError().c_str());
     }
 
-    NanReturnUndefined();
+    info.GetReturnValue().SetUndefined();
 }
 
 ///
 NAN_METHOD(PngImgAdapter::Write) {
-    NanScope();
+    PngImg& img = GetObj(info)->img_;
+    Local<String> file = info[0].As<String>();
+    Callback* callback = new Callback(info[1].As<Function>());
 
-    PngImg& img = GetObj(args)->img_;
-    Local<String> file = args[0].As<String>();
-    NanCallback* callback = new NanCallback(args[1].As<Function>());
-
-    NanAsyncQueueWorker(new SaveWorker(callback, img, *v8::String::Utf8Value(file)));
-    NanReturnUndefined();
+    AsyncQueueWorker(new SaveWorker(callback, img, *v8::String::Utf8Value(file)));
+    info.GetReturnValue().SetUndefined();
 }
 
 ///
