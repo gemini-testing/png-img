@@ -13,7 +13,7 @@
   "devDependencies": {
     "mocha": "^2.0.1",
     "must": "~0.12.0",
-    "node-gyp": "~1.0.2"
+    "node-gyp": "^2.0.2"
   },
   "scripts": {
     "test": "./dev/test",
