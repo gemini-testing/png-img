@@ -13,11 +13,24 @@
   "devDependencies": {
     "mocha": "^2.0.1",
     "must": "~0.12.0",
-    "node-gyp": "^2.0.2"
+    "node-gyp": "^2.0.2",
+    "aws-sdk": "2.2.x"
+  },
+  "bundledDependencies": {
+    "node-pre-gyp": "0.6.x"
   },
   "scripts": {
     "test": "./dev/test",
-    "build": "node-gyp rebuild"
+    "build": "node-gyp rebuild",
+    "install": "node-pre-gyp install --fallback-to-build",
+    "packageBinary": "node-pre-gyp package",
+    "publishBinary": "node-pre-gyp publish"
+  },
+  "binary": {
+    "module_name": "png_img",
+    "module_path": "./build/Result",
+    "host":        "https://png-img-pre-gyp.s3-eu-west-1.amazonaws.com/",
+    "remote_path": "./{name}/v{version}"
   },
   "author": "Anton Usmansky <anton.usmansky@gmail.com> (https://github.com/j0tunn)",
   "license": "MIT",

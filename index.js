@@ -2,7 +2,10 @@
 
 var utils = require('./utils'),
     inherit = require('inherit'),
-    PngImg = require('./build/Release/png_img').PngImg;
+    binary = require('node-pre-gyp'),
+    path = require('path'),
+    binding_path = binary.find(path.resolve(path.join(__dirname,'./package.json'))),
+    PngImg = require(binding_path).PngImg;
 
 module.exports = inherit({
     ///

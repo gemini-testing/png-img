@@ -38,6 +38,17 @@
           }
         }]
       ]
+    },
+    {
+      "target_name": "move_module",
+      "type": "none",
+      "dependencies": [ "<(module_name)" ],
+      "copies": [
+        {
+          "files": [ "<(PRODUCT_DIR)/<(module_name).node" ],
+          "destination": "<(module_path)"
+        }
+      ]
     }
   ]
 }

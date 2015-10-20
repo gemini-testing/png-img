@@ -22,3 +22,9 @@ addons:
     packages:
     - gcc-4.8
     - g++-4.8
+
+scripts:
+  - npm install
+  - npm test
+  - npm run-script packageBinary
+  - npm run-script publishBinary
