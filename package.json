@@ -8,7 +8,8 @@
   },
   "dependencies": {
     "nan": "^2.0.4",
-    "inherit": "~2.2.2"
+    "inherit": "~2.2.2",
+    "node-pre-gyp": "0.6.x"
   },
   "devDependencies": {
     "mocha": "^2.0.1",
@@ -16,9 +17,7 @@
     "node-gyp": "^2.0.2",
     "aws-sdk": "2.2.x"
   },
-  "bundledDependencies": {
-    "node-pre-gyp": "0.6.x"
-  },
+  "bundledDependencies": ["node-pre-gyp"],
   "scripts": {
     "test": "./dev/test",
     "build": "node-gyp rebuild",
