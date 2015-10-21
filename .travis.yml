@@ -17,6 +17,8 @@ addons:
     packages:
     - clang-3.5
 
+install: npm install --clang=1
+
 after_script:
   - npm run-script packageBinary
   - npm run-script publishBinary
