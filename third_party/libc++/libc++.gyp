@@ -21,7 +21,7 @@
       },
       'all_dependent_settings': {
         'target_conditions': [
-          ['_type!="none"', {
+          ['_type!="none" and OS=="linux"', {
             'include_dirs': [
               './libcxx/include',
               '../libc++abi/libcxxabi/include',
