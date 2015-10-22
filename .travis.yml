@@ -18,7 +18,7 @@ addons:
     - binutils
     - clang-3.5
 
-install: npm install --clang=1
+install: npm install --clang=1 --build-from-source
 
 after_script:
   - npm run-script packageBinary
