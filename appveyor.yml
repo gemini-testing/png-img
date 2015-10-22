@@ -1,0 +1,55 @@
+environment:
+  node_pre_gyp_accessKeyId:
+    secure: rQ5epOSve3fmLxaTbCxbHf5msiTpUp385KNMQi0PzXA=
+  node_pre_gyp_secretAccessKey:
+    secure: m0OsuzftpnFSZj6gyyE1pxefcNZVThllytvj/N6fd3Ta8Dx4OtrJ091BU2WhkJ5j
+
+  matrix:
+    - nodejs_version: 0.10.40
+      platform: x86
+      msvs_toolset: 12
+    - nodejs_version: 0.10.40
+      platform: x64
+      msvs_toolset: 12
+    - nodejs_version: 0.12.7
+      platform: x86
+      msvs_toolset: 12
+    - nodejs_version: 0.12.7
+      platform: x64
+      msvs_toolset: 12
+    - nodejs_version: 1.8.1
+      platform: x86
+      msvs_toolset: 12
+    - nodejs_version: 1.8.1
+      platform: x64
+      msvs_toolset: 12
+    - nodejs_version: 2.0.0
+      platform: x64
+      msvs_toolset: 12
+    - nodejs_version: 2.0.0
+      platform: x86
+      msvs_toolset: 12
+    - nodejs_version: 3.3.0
+      platform: x64
+      msvs_toolset: 12
+    - nodejs_version: 3.3.0
+      platform: x86
+      msvs_toolset: 12
+    - nodejs_version: 4.0.0
+      platform: x64
+      msvs_toolset: 12
+    - nodejs_version: 4.0.0
+      platform: x86
+      msvs_toolset: 12
+
+
+install:
+  - npm install --clang=1
+
+on_success:
+  - npm run-script packageBinary
+  - npm run-script publishBinary
+
+build: OFF
+test: OFF
+deploy: OFF
