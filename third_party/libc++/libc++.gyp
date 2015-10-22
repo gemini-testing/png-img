@@ -7,43 +7,48 @@
       'target_name': 'libcxx_proxy',
       'type': 'none',
       'toolsets': ['host', 'target'],
-      'dependencies=': [
-        'libc++',
-      ],
-      # Do not add dependency on libc++.so to dependents of this target. We
-      # don't want to pass libc++.so on the command line to the linker, as that
-      # would cause it to be linked into C executables which don't need it.
-      # Instead, we supply -stdlib=libc++ and let the clang driver decide.
-      'dependencies_traverse': 0,
-      'variables': {
-        # Don't add this target to the dependencies of targets with type=none.
-        'link_dependency': 1,
-      },
-      'all_dependent_settings': {
-        'target_conditions': [
-          ['_type!="none" and OS=="linux"', {
-            'include_dirs': [
-              './libcxx/include',
-              '../libc++abi/libcxxabi/include',
-            ],
-            'cflags_cc': [
-              '-nostdinc++',
-            ],
-            'ldflags': [
-              '-stdlib=libc++',
+      'conditions': [
+        ['OS=="linux"', {
+          'dependencies=': [
+            'libc++',
+          ],
 
-              # Normally the generator takes care of RPATH. Our case is special
-              # because the generator is unaware of the libc++.so dependency.
-              # Note that setting RPATH here is a potential security issue. See:
-              # https://code.google.com/p/gyp/issues/detail?id=315
-              '-Wl,-R,\$$ORIGIN/lib/',
+          # Do not add dependency on libc++.so to dependents of this target. We
+          # don't want to pass libc++.so on the command line to the linker, as that
+          # would cause it to be linked into C executables which don't need it.
+          # Instead, we supply -stdlib=libc++ and let the clang driver decide.
+          'dependencies_traverse': 0,
+          'variables': {
+            # Don't add this target to the dependencies of targets with type=none.
+            'link_dependency': 1,
+          },
+          'all_dependent_settings': {
+            'target_conditions': [
+              ['_type!="none" and OS=="linux"', {
+                'include_dirs': [
+                  './libcxx/include',
+                  '../libc++abi/libcxxabi/include',
+                ],
+                'cflags_cc': [
+                  '-nostdinc++',
+                ],
+                'ldflags': [
+                  '-stdlib=libc++',
+
+                  # Normally the generator takes care of RPATH. Our case is special
+                  # because the generator is unaware of the libc++.so dependency.
+                  # Note that setting RPATH here is a potential security issue. See:
+                  # https://code.google.com/p/gyp/issues/detail?id=315
+                  '-Wl,-R,\$$ORIGIN/lib/',
+                ],
+                'library_dirs': [
+                  '<(PRODUCT_DIR)/lib/',
+                ],
+              }],
             ],
-            'library_dirs': [
-              '<(PRODUCT_DIR)/lib/',
-            ],
-          }],
-        ],
-      },
+          }
+        }]
+      ]
     },
     {
       'target_name': 'libc++',
