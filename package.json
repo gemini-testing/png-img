@@ -22,8 +22,7 @@
     "test": "./dev/test",
     "build": "node-gyp rebuild",
     "install": "node-pre-gyp install --fallback-to-build",
-    "packageBinary": "node-pre-gyp package",
-    "publishBinary": "node-pre-gyp publish"
+    "publishBinary": "node-pre-gyp package publish"
   },
   "binary": {
     "module_name": "png_img",

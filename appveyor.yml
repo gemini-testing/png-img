@@ -6,26 +6,24 @@ environment:
 
   matrix:
     - nodejs_version: 0.10.40
-      platform: x86
       msvs_toolset: 12
     - nodejs_version: 0.12.7
-      platform: x86
       msvs_toolset: 12
     - nodejs_version: 1.8.1
-      platform: x86
       msvs_toolset: 12
     - nodejs_version: 2.0.0
-      platform: x86
       msvs_toolset: 12
     - nodejs_version: 3.3.0
-      platform: x86
       msvs_toolset: 12
     - nodejs_version: 4.0.0
-      platform: x86
       msvs_toolset: 12
 
+platform:
+  - x86
+  - x64
 
 install:
+  - ps: Install-Product node $env:nodejs_version
   - npm install --build-from-source
 
 on_success:

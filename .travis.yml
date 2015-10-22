@@ -20,6 +20,4 @@ addons:
 
 install: npm install --clang=1 --build-from-source
 
-after_script:
-  - npm run-script packageBinary
-  - npm run-script publishBinary
+after_script: npm run-script publishBinary
