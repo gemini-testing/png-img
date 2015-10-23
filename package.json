@@ -20,6 +20,7 @@
   "bundledDependencies": ["node-pre-gyp"],
   "scripts": {
     "test": "./dev/test",
+    "mocha": "mocha",
     "build": "node-gyp rebuild",
     "install": "node-pre-gyp install --fallback-to-build",
     "publishBinary": "node-pre-gyp package publish"
