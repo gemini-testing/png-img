@@ -8,16 +8,28 @@
   },
   "dependencies": {
     "nan": "^2.0.4",
-    "inherit": "~2.2.2"
+    "inherit": "~2.2.2",
+    "node-pre-gyp": "0.6.x"
   },
   "devDependencies": {
     "mocha": "^2.0.1",
     "must": "~0.12.0",
-    "node-gyp": "^2.0.2"
+    "node-gyp": "^3.0.3",
+    "aws-sdk": "2.2.x"
   },
+  "bundledDependencies": ["node-pre-gyp"],
   "scripts": {
     "test": "./dev/test",
-    "build": "node-gyp rebuild"
+    "mocha": "mocha",
+    "build": "node-gyp rebuild",
+    "install": "node-pre-gyp install --fallback-to-build",
+    "publishBinary": "node-pre-gyp package publish"
+  },
+  "binary": {
+    "module_name": "png_img",
+    "module_path": "./build/Result",
+    "host":        "https://png-img-pre-gyp.s3-eu-west-1.amazonaws.com/",
+    "remote_path": "./{name}/v{version}"
   },
   "author": "Anton Usmansky <anton.usmansky@gmail.com> (https://github.com/j0tunn)",
   "license": "MIT",

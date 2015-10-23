@@ -14,6 +14,7 @@
         "<!(node -e \"require('nan')\")",
       ],
       "dependencies": [
+        "./third_party/libc++/libc++.gyp:libcxx_proxy",
         "./third_party/libpng/libpng.gyp:libpng"
       ],
       "conditions": [
@@ -25,7 +26,9 @@
             }
         }],
         [ "OS=='linux'", {
-            "cflags": ["-std=c++0x"]
+            "cflags": ["-std=c++11"],
+            "ldflags": ["-nostdlib"],
+            "libraries": ['<(PRODUCT_DIR)/c++.a']
         }],
         [ "OS=='win'", {
           "msvs_settings": {
@@ -37,6 +40,17 @@
             }
           }
         }]
+      ]
+    },
+    {
+      "target_name": "move_module",
+      "type": "none",
+      "dependencies": [ "<(module_name)" ],
+      "copies": [
+        {
+          "files": [ "<(PRODUCT_DIR)/<(module_name).node" ],
+          "destination": "<(module_path)"
+        }
       ]
     }
   ]
