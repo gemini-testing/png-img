@@ -25,9 +25,7 @@ platform:
 install:
   - ps: Install-Product node $env:nodejs_version $env:PLATFORM
   - cmd: npm install --build-from-source
-
-test_script:
-  - npm run-script mocha
+  - cmd: npm run-script mocha
 
 on_success:
   - npm run-script publishBinary
