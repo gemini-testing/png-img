@@ -3,17 +3,10 @@ sudo: false
 
 node_js:
   - '0.10'
-  - '0.12'
-  - 'iojs'
+  - '4'
 
 env:
   - CXX=g++-4.8
-  - CXX=g++-4.6
-
-matrix:
-  exclude:
-    - node_js: 'iojs'
-      env: CXX=g++-4.6
 
 addons:
   apt:
