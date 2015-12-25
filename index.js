@@ -2,19 +2,23 @@
 
 var utils = require('./utils'),
     inherit = require('inherit'),
-    PngImg = require('./build/Release/png_img').PngImg;
+    PNG = require('pngjs').PNG,
+    fs = require('fs'),
+    stream = require('stream');
 
-module.exports = inherit({
+var PngImg = inherit({
     ///
-    __constructor: function(rawImg) {
-        this.img_ = new PngImg(rawImg);
+    __constructor: function(png, alpha) {
+        this._png = png;
+        this._alpha = alpha;
+        this._lastIdx = this._getIdx(this._png.width - 1, this._png.height - 1);
     },
 
     ///
     size: function() {
         return {
-            width: this.img_.width,
-            height: this.img_.height
+            width: this._png.width,
+            height: this._png.height
         };
     },
 
@@ -25,7 +29,22 @@ module.exports = inherit({
      * @return {Object}  {r, g, b, a}
      */
     get: function(x, y) {
-        return this.img_.get(x, y);
+        var idx = this._getIdx(x, y);
+
+        if(idx > this._lastIdx) {
+            throw new Error('Out of the bounds');
+        }
+
+        return {
+            r: this._png.data[idx],
+            g: this._png.data[idx + 1],
+            b: this._png.data[idx + 2],
+            a: this._png.data[idx + 3]
+        };
+    },
+
+    _getIdx: function(x, y) {
+        return (this._png.width * y + x) << 2;
     },
 
     /**
@@ -47,6 +66,8 @@ module.exports = inherit({
      * @param {Object|String} color as rgb object or as a '#XXXXXX' string
      */
     fill: function(offsetX, offsetY, width, height, color) {
+        this._validateArgs(offsetX, offsetY, width, height);
+
         if(typeof color === 'string') {
             var objColor = utils.stringToRGBA(color);
             if(!objColor) {
@@ -60,18 +81,50 @@ module.exports = inherit({
             r: color.r || 0,
             g: color.g || 0,
             b: color.b || 0,
-            a: color.a === undefined ? 255 : color.a
+            a: color.a === undefined || !this._alpha ? 255 : color.a
         };
 
-        this.img_.fill(offsetX, offsetY, width, height, color);
+        for (var y = 0; y < height; ++y) {
+            for (var x = 0; x < width; ++x) {
+                var idx = this._getIdx(offsetX + x, offsetY + y);
+                this._png.data[idx] = color.r;
+                this._png.data[idx + 1] = color.g;
+                this._png.data[idx + 2] = color.b;
+                this._png.data[idx + 3] = color.a;
+            }
+        }
+
         return this;
     },
 
     ///
     crop: function(offsetX, offsetY, width, height) {
-        this.img_.crop(offsetX, offsetY, width, height);
+        this._validateArgs(offsetX, offsetY, width, height);
+
+        var dst = new PNG({width: width, height: height});
+        this._png.bitblt(dst, offsetX, offsetY, width, height, 0, 0);
+        this._png = dst;
+
         return this;
     },
+
+    ///
+    _validateArgs: function(offsetX, offsetY, width, height) {
+        // `val > 0` also validates cases when `val` is not a number
+        if (!((offsetX > 0 || offsetX === 0) && (offsetY > 0 || offsetY === 0) && width > 0 && height > 0)) {
+            throw new Error('Bad arguments');
+        }
+
+        var size = this.size();
+        if (offsetX + width > size.width || offsetY + height > size.height) {
+            throw new Error('Out of the bounds');
+        }
+    },
+
+    /**
+     * @typedef {Function} SaveCallback
+     * @param {String} error error message in case of fail
+     */
 
     /**
      * Save image to file
@@ -79,11 +132,35 @@ module.exports = inherit({
      * @param  {SaveCallback} callback
      */
     save: function(file, callback) {
-        this.img_.write(file, callback);
+        this._png.pack()
+            .pipe(fs.createWriteStream(file))
+            .on('error', function(error) {
+                callback(error);
+            })
+            .on('finish', function() {
+                callback(null);
+            });
     }
+}, {
+    fromBuffer: function(buffer, cb) {
+        var bufferStream = new stream.PassThrough();
+        bufferStream.end(buffer);
 
-    /**
-     * @typedef {Function} SaveCallback
-     * @param {String} error error message in case of fail
-     */
+        var alpha;
+        bufferStream
+            .pipe(new PNG())
+            .on('error', function (e) {
+                cb(e, null);
+            })
+            .on('metadata', function(metadata) {
+                alpha = metadata.alpha;
+            })
+            .on('parsed', function () {
+                cb(null, new PngImg(this, alpha));
+            });
+    }
 });
+
+
+
+module.exports = PngImg;
