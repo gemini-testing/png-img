@@ -3,14 +3,9 @@ png-img
 
 [![Build Status](https://travis-ci.org/gemini-testing/png-img.svg)](https://travis-ci.org/gemini-testing/png-img)
 
-Lite self-contained png image processing library for OS X and Linux.
+Liteweight png image processing library.
 
-## Requirements
-Linux: Depends on GCC 4.6 or later
-
-OS X: Tested with Xcode 6.0 development tools (but should be ok with Xcode 5.0 also)
-
-Windows: Tested with MSVC 2013 Express
+**Note**: since `v2.0.0` this lib based on [pngjs2](https://github.com/lukeapage/pngjs) and doesn't build any native modules.
 
 ## Installation
 ```
@@ -18,17 +13,25 @@ npm install png-img
 ```
 
 ## API
-### new PngImg(buffer)
+### PngImg.fromBuffer(buffer, cb)
 Create `PngImg` object from passed buffer with image.
 
 Arguments:
- * `buf` - `Buffer` with image file content.
+ * `buf` - `Buffer` with image file content
+ * `cb` - callback. Will be called when image will be parsed
 ```js
 var fs = require('fs'),
     PngImg = require('png-img');
 
-var buf = fs.readFileSync('path/to/img.png'),
-    img = new PngImg(buf);
+var buf = fs.readFileSync('path/to/img.png');
+
+PngImg.fromBuffer(buf, function(err, img) {
+  if (err) {
+    console.error(err);
+  } else {
+    // Use `img`
+  }
+});
 ```
 
 ### size()
@@ -121,24 +124,3 @@ img.save('path/to/file.png', function(error) {
     }
 });
 ```
-
-## Build
-```
-npm run build
-```
-This will build native node extension and place it to the `compiled` directory
-
-## Vagrant
-Use vagrant to build and test on Linux and Windows from OS X.
-
-Tested with `vagrant 1.7` and `VirtualBox 4.3`.
-
-1. Install `vagrant` and `VirtualBox`.
-2. Create windows vagrant box (see [howto](dev/vagrant-win-box.md))
-3. Run `vagrant up --provider virtualbox`
-4. Specify `OS` env variable to run and test on specific platform:
-  - `npm run build`, `npm test` - current platform
-  - `OS=linux npm test` - Ubuntu 14.04
-  - `OS=linux-old npm test` - Ubuntu 12.04
-  - `OS=win npm test` - windows
-  - `OS=all npm test` - all

@@ -1,5 +1,2 @@
-/build/
 /node_modules/
-.vagrant
-win.box
 npm-debug.log
