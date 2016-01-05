@@ -7,17 +7,15 @@
     "node": ">= 0.10.x"
   },
   "dependencies": {
-    "nan": "^2.0.4",
-    "inherit": "~2.2.2"
+    "inherit": "~2.2.2",
+    "pngjs": "~2.2.0"
   },
   "devDependencies": {
     "mocha": "^2.0.1",
-    "must": "~0.12.0",
-    "node-gyp": "^2.0.2"
+    "must": "~0.12.0"
   },
   "scripts": {
-    "test": "./dev/test",
-    "build": "node-gyp rebuild"
+    "test": "mocha"
   },
   "author": "Anton Usmansky <anton.usmansky@gmail.com> (https://github.com/j0tunn)",
   "license": "MIT",
