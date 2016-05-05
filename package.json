@@ -4,7 +4,7 @@
   "description": "PNG Image",
   "main": "index.js",
   "engines": {
-    "node": ">= 0.10.x"
+    "node": ">= 4.0.0"
   },
   "dependencies": {
     "nan": "^2.0.4",
