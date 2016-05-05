@@ -74,6 +74,21 @@ module.exports = inherit({
     },
 
     /**
+     * Set new image size. Doesn't strech image, just add more pixels
+     * @param {Number} width
+     * @param {Number} height
+     */
+    setSize: function(width, height) {
+        var size = this.size();
+        if(width <= size.width && height <= size.height) {
+            return this.crop(0, 0, width, height);
+        }
+
+        this.img_.setSize(width, height);
+        return this;
+    },
+
+    /**
      * Save image to file
      * @param  {String}   file     path to file
      * @param  {SaveCallback} callback

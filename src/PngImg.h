@@ -4,6 +4,7 @@
 #include <png.h>
 #include <string>
 #include <memory>
+#include <vector>
 
 struct ImgInfo {
     png_uint_32 width;
@@ -40,16 +41,18 @@ public:
     std::unique_ptr<Pxl> Get(png_uint_32 x, png_uint_32 y) const;
     bool Fill(png_uint_32 offsetX, png_uint_32 offsetY, png_uint_32 width, png_uint_32 height, const Pxl& pxl);
     bool Crop(png_uint_32 offsetX, png_uint_32 offsetY, png_uint_32 width, png_uint_32 height);
+    void SetSize(png_uint_32 width, png_uint_32 height);
     bool Write(const std::string& file);
 
 private:
     void ReadInfo_(PngReadStruct& readStruct);
-    void ReadImg_(PngReadStruct& readStruct);
+    void InitStorage_();
     bool InBounds_(png_uint_32 offsetX, png_uint_32 offsetY, png_uint_32 width, png_uint_32 height) const;
     void Set_(png_uint_32 x, png_uint_32 y, const Pxl& pxl);
+    void CopyRows(const std::vector<png_bytep>& rowPtrs, const size_t numRows, const size_t rowLen);
 
     ImgInfo info_;
-    png_bytep* rowPtrs_;
+    std::vector<png_bytep> rowPtrs_;
     char* data_;
     mutable std::string error_;
 };

@@ -24,6 +24,7 @@ void PngImgAdapter::Init() {
     SetPrototypeMethod(tpl, "get", PngImgAdapter::Get);
     SetPrototypeMethod(tpl, "fill", PngImgAdapter::Fill);
     SetPrototypeMethod(tpl, "crop", PngImgAdapter::Crop);
+    SetPrototypeMethod(tpl, "setSize", PngImgAdapter::SetSize);
     SetPrototypeMethod(tpl, "write", PngImgAdapter::Write);
 }
 
@@ -135,6 +136,17 @@ NAN_METHOD(PngImgAdapter::Crop) {
     if(!ok) {
         return ThrowError(img.LastError().c_str());
     }
+
+    info.GetReturnValue().SetUndefined();
+}
+
+///
+NAN_METHOD(PngImgAdapter::SetSize) {
+    PngImg& img = GetObj(info)->img_;
+    img.SetSize(
+        info[0]->Uint32Value(),
+        info[1]->Uint32Value()
+    );
 
     info.GetReturnValue().SetUndefined();
 }
