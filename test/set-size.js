@@ -3,7 +3,7 @@
 const PngImg = require('../'),
     fs = require('fs'),
     path = require('path'),
-    rawImg = fs.readFileSync(path.join(__dirname, 'black2x2.png')),
+    rawImg = fs.readFileSync(path.join(__dirname, 'black2x2rgba.png')),
 
     RED = {r: 255, g: 0, b: 0, a: 0},
     BLACK = {r: 0, g: 0, b: 0, a: 0};

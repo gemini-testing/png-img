@@ -42,6 +42,7 @@ public:
     bool Fill(png_uint_32 offsetX, png_uint_32 offsetY, png_uint_32 width, png_uint_32 height, const Pxl& pxl);
     bool Crop(png_uint_32 offsetX, png_uint_32 offsetY, png_uint_32 width, png_uint_32 height);
     void SetSize(png_uint_32 width, png_uint_32 height);
+    void Insert(const PngImg& img, png_uint_32 offsetX, png_uint_32 offsetY);
     bool Write(const std::string& file);
 
 private:
@@ -49,7 +50,9 @@ private:
     void InitStorage_();
     bool InBounds_(png_uint_32 offsetX, png_uint_32 offsetY, png_uint_32 width, png_uint_32 height) const;
     void Set_(png_uint_32 x, png_uint_32 y, const Pxl& pxl);
-    void CopyRows(const std::vector<png_bytep>& rowPtrs, const size_t numRows, const size_t rowLen);
+    void CopyRows_(const std::vector<png_bytep>& rowPtrs, const size_t numRows, const size_t rowLen,
+        png_uint_32 offsetX = 0, png_uint_32 offsetY = 0);
+    void CopyPxlByPxl_(const PngImg& img, png_uint_32 offsetX, png_uint_32 offsetY);
 
     ImgInfo info_;
     std::vector<png_bytep> rowPtrs_;

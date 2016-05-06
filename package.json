@@ -7,8 +7,7 @@
     "node": ">= 4.0.0"
   },
   "dependencies": {
-    "nan": "^2.0.4",
-    "inherit": "~2.2.2"
+    "nan": "^2.0.4"
   },
   "devDependencies": {
     "mocha": "^2.0.1",

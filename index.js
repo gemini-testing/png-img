@@ -1,22 +1,21 @@
 'use strict';
 
 var utils = require('./utils'),
-    inherit = require('inherit'),
-    PngImg = require('./build/Release/png_img').PngImg;
+    PngImgImpl = require('./build/Release/png_img').PngImg;
 
-module.exports = inherit({
+module.exports = class PngImg {
     ///
-    __constructor: function(rawImg) {
-        this.img_ = new PngImg(rawImg);
-    },
+    constructor(rawImg) {
+        this.img_ = new PngImgImpl(rawImg);
+    }
 
     ///
-    size: function() {
+    size() {
         return {
             width: this.img_.width,
             height: this.img_.height
         };
-    },
+    }
 
     /**
      * Get pixel
@@ -24,9 +23,9 @@ module.exports = inherit({
      * @param  {Number} y y coordinate (top to bottom)
      * @return {Object}  {r, g, b, a}
      */
-    get: function(x, y) {
+    get(x, y) {
         return this.img_.get(x, y);
-    },
+    }
 
     /**
      * Set pixel color
@@ -34,9 +33,9 @@ module.exports = inherit({
      * @param {Number} y y coordinate (top to bottom)
      * @param {Object|String} color as rgb object or as a '#XXXXXX' string
      */
-    set: function(x, y, color) {
+    set(x, y, color) {
         return this.fill(x, y, 1, 1, color);
-    },
+    }
 
     /**
      * Fill region with some color
@@ -46,7 +45,7 @@ module.exports = inherit({
      * @param {Number} height
      * @param {Object|String} color as rgb object or as a '#XXXXXX' string
      */
-    fill: function(offsetX, offsetY, width, height, color) {
+    fill(offsetX, offsetY, width, height, color) {
         if(typeof color === 'string') {
             var objColor = utils.stringToRGBA(color);
             if(!objColor) {
@@ -65,20 +64,20 @@ module.exports = inherit({
 
         this.img_.fill(offsetX, offsetY, width, height, color);
         return this;
-    },
+    }
 
     ///
-    crop: function(offsetX, offsetY, width, height) {
+    crop(offsetX, offsetY, width, height) {
         this.img_.crop(offsetX, offsetY, width, height);
         return this;
-    },
+    }
 
     /**
      * Set new image size. Doesn't strech image, just add more pixels
      * @param {Number} width
      * @param {Number} height
      */
-    setSize: function(width, height) {
+    setSize(width, height) {
         var size = this.size();
         if(width <= size.width && height <= size.height) {
             return this.crop(0, 0, width, height);
@@ -86,14 +85,36 @@ module.exports = inherit({
 
         this.img_.setSize(width, height);
         return this;
-    },
+    }
+
+    /**
+     * Inserts image
+     * @param {PngImg} img image to insert
+     * @param {Number} offsetX
+     * @param {Number} offsetY
+     */
+    insert(img, offsetX, offsetY) {
+        if(!(img instanceof PngImg)) {
+            throw new Error('Not a PngImg object');
+        }
+
+        var size = img.size(),
+            mySize = this.size();
+
+        if(offsetX + size.width > mySize.width || offsetY + size.height > mySize.height) {
+            throw new Error('Out of the bounds');
+        }
+
+        this.img_.insert(img.img_, offsetX, offsetY);
+        return this;
+    }
 
     /**
      * Save image to file
      * @param  {String}   file     path to file
      * @param  {SaveCallback} callback
      */
-    save: function(file, callback) {
+    save(file, callback) {
         this.img_.write(file, callback);
     }
 
@@ -101,4 +122,4 @@ module.exports = inherit({
      * @typedef {Function} SaveCallback
      * @param {String} error error message in case of fail
      */
-});
+};

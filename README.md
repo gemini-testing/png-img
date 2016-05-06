@@ -122,6 +122,22 @@ img
   .setSize(size.width/2, size.height*2);
 ```
 
+### insert(img, offsetX, offsetY)
+Inserts image into specified place.
+
+Arguments:
+ * `img` - image to insert. Should be a PngImg object
+ * `offsetX` - horizontal offset from the left side of the image
+ * `offsetY` - vertical offset from the top side of the image
+
+Join to images (pretend that they have same witdh):
+ ```js
+var otherImg = new PngImg(/*...*/)
+img
+  .setSize(img.size().width, img.size().height + otherImg.size().height)
+  .insert(otherImg, 0, img.size().height);
+ ```
+
 ### save(file, callback)
 Save image to file. Asynchronous operation.
 

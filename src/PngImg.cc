@@ -148,14 +148,35 @@ void PngImg::SetSize(png_uint_32 width, png_uint_32 height)
 
     InitStorage_();
     memset(data_, 0, info_.height * info_.rowbytes);
-    CopyRows(oldRowPtrs, min(height, oldInfo.height), min(oldInfo.rowbytes, info_.rowbytes));
+    CopyRows_(oldRowPtrs, min(height, oldInfo.height), min(oldInfo.rowbytes, info_.rowbytes));
 }
 
 ///
-void PngImg::CopyRows(const vector<png_bytep>& rowPtrs, const size_t numRows, const size_t rowLen)
+void PngImg::Insert(const PngImg& img, png_uint_32 offsetX, png_uint_32 offsetY)
+{
+    if(info_.pxlsize == img.info_.pxlsize) {
+        CopyRows_(img.rowPtrs_, img.info_.height, img.info_.rowbytes, offsetX, offsetY);
+    } else {
+        CopyPxlByPxl_(img, offsetX, offsetY);
+    }
+}
+
+///
+void PngImg::CopyPxlByPxl_(const PngImg& img, png_uint_32 offsetX, png_uint_32 offsetY)
+{
+    for(size_t x = 0; x < img.info_.width; ++x) {
+        for(size_t y = 0; y < img.info_.height; ++y) {
+            Set_(offsetX + x, offsetY + y, *img.Get(x, y));
+        }
+    }
+}
+
+///
+void PngImg::CopyRows_(const vector<png_bytep>& rowPtrs, const size_t numRows, const size_t rowLen,
+    png_uint_32 offsetX, png_uint_32 offsetY)
 {
     for(size_t y = 0; y < numRows; ++y) {
-        memcpy(rowPtrs_[y], rowPtrs[y], rowLen);
+        memcpy(rowPtrs_[y + offsetY] + offsetX * info_.pxlsize, rowPtrs[y], rowLen);
     }
 }
 
