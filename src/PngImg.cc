@@ -4,6 +4,7 @@
 #include <png.h>
 #include <string.h>
 #include <memory>
+#include <algorithm>
 
 using namespace std;
 
@@ -23,23 +24,22 @@ void readFromBuf(png_structp pngPtr, png_bytep data, png_size_t length) {
 
 ///
 PngImg::PngImg(const char* buf, const size_t bufLen)
-    : rowPtrs_(nullptr)
-    , data_(nullptr)
+    : data_(nullptr)
 {
     memset(&info_, 0, sizeof(info_));
-    PngReadStruct readStruct;
-    if(readStruct.Valid()) {
+    PngReadStruct rs;
+    if(rs.Valid()) {
         BufPtr bufPtr = {buf, bufLen};
-        png_set_read_fn(readStruct.pngPtr, (png_voidp)&bufPtr, readFromBuf);
+        png_set_read_fn(rs.pngPtr, (png_voidp)&bufPtr, readFromBuf);
+        ReadInfo_(rs);
 
-        ReadInfo_(readStruct);
-        ReadImg_(readStruct);
+        InitStorage_();
+        png_read_image(rs.pngPtr, &rowPtrs_[0]);
     }
 }
 
 ///
 PngImg::~PngImg() {
-    if(rowPtrs_) delete [] rowPtrs_;
     if(data_) delete [] data_;
 }
 
@@ -58,15 +58,13 @@ void PngImg::ReadInfo_(PngReadStruct& rs) {
 }
 
 ///
-void PngImg::ReadImg_(PngReadStruct& rs) {
-    rowPtrs_ = new png_bytep[info_.height];
+void PngImg::InitStorage_() {
+    rowPtrs_.resize(info_.height, nullptr);
     data_ = new char[info_.height * info_.rowbytes];
 
     for(size_t i = 0; i < info_.height; ++i) {
         rowPtrs_[i] = (png_bytep)data_ + i * info_.rowbytes;
     }
-
-    png_read_image(rs.pngPtr, rowPtrs_);
 }
 
 ///
@@ -138,6 +136,51 @@ bool PngImg::Crop(png_uint_32 offsetX, png_uint_32 offsetY, png_uint_32 width, p
 }
 
 ///
+void PngImg::SetSize(png_uint_32 width, png_uint_32 height)
+{
+    const ImgInfo oldInfo = info_;
+    const unique_ptr<char[]> oldData{data_};
+    const vector<png_bytep> oldRowPtrs{rowPtrs_};
+
+    info_.width = width;
+    info_.height = height;
+    info_.rowbytes = info_.pxlsize * width;
+
+    InitStorage_();
+    memset(data_, 0, info_.height * info_.rowbytes);
+    CopyRows_(oldRowPtrs, min(height, oldInfo.height), min(oldInfo.rowbytes, info_.rowbytes));
+}
+
+///
+void PngImg::Insert(const PngImg& img, png_uint_32 offsetX, png_uint_32 offsetY)
+{
+    if(info_.pxlsize == img.info_.pxlsize) {
+        CopyRows_(img.rowPtrs_, img.info_.height, img.info_.rowbytes, offsetX, offsetY);
+    } else {
+        CopyPxlByPxl_(img, offsetX, offsetY);
+    }
+}
+
+///
+void PngImg::CopyPxlByPxl_(const PngImg& img, png_uint_32 offsetX, png_uint_32 offsetY)
+{
+    for(size_t x = 0; x < img.info_.width; ++x) {
+        for(size_t y = 0; y < img.info_.height; ++y) {
+            Set_(offsetX + x, offsetY + y, *img.Get(x, y));
+        }
+    }
+}
+
+///
+void PngImg::CopyRows_(const vector<png_bytep>& rowPtrs, const size_t numRows, const size_t rowLen,
+    png_uint_32 offsetX, png_uint_32 offsetY)
+{
+    for(size_t y = 0; y < numRows; ++y) {
+        memcpy(rowPtrs_[y + offsetY] + offsetX * info_.pxlsize, rowPtrs[y], rowLen);
+    }
+}
+
+///
 bool PngImg::InBounds_(png_uint_32 offsetX, png_uint_32 offsetY, png_uint_32 width, png_uint_32 height) const
 {
     return width != 0
@@ -181,7 +224,7 @@ bool PngImg::Write(const string& file) {
         info_.filter_type
     );
     png_write_info(pws.pngPtr, pws.infoPtr);
-    png_write_image(pws.pngPtr, rowPtrs_);
+    png_write_image(pws.pngPtr, &rowPtrs_[0]);
     png_write_end(pws.pngPtr, NULL);
     return true;
 }

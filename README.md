@@ -103,6 +103,41 @@ img
     .crop(8, 8, 8, 8);
 ```
 
+### setSize(width, height)
+Sets new image size. Modifies current image.
+
+Arguments:
+ * `width` - new width
+ * `height` - new height
+
+Returns: current image object
+
+If new size is less or equal than current size, than `crop` will be performed.
+
+**Note**: this method doesn't strech current image, it just sets new size. If new dimension is less than previous
+than image will be cut. If new dimension is greater than previous than image will be extended with black area.
+```js
+var size = img.size();
+img
+  .setSize(size.width/2, size.height*2);
+```
+
+### insert(img, offsetX, offsetY)
+Inserts image into specified place.
+
+Arguments:
+ * `img` - image to insert. Should be a PngImg object
+ * `offsetX` - horizontal offset from the left side of the image
+ * `offsetY` - vertical offset from the top side of the image
+
+Join to images (pretend that they have same witdh):
+ ```js
+var otherImg = new PngImg(/*...*/)
+img
+  .setSize(img.size().width, img.size().height + otherImg.size().height)
+  .insert(otherImg, 0, img.size().height);
+ ```
+
 ### save(file, callback)
 Save image to file. Asynchronous operation.
 

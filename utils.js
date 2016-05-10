@@ -9,7 +9,7 @@ exports.RGBToString = function(rgb) {
 
     ///
     function toStr_(n, minLen) {
-        var str = n.toString(16);
+        const str = n.toString(16);
         return str.length < 2 ? '0' + str : str;
     }
 };
@@ -19,7 +19,7 @@ exports.RGBToString = function(rgb) {
  * @return {Object} rgb object {r:Number, g:Number, b:Number}
  */
 exports.stringToRGBA = function(string) {
-    var match = string.match(/^#([0-9a-f]{2})([0-9a-f]{2})([0-9a-f]{2})$/i);
+    const match = string.match(/^#([0-9a-f]{2})([0-9a-f]{2})([0-9a-f]{2})$/i);
     if(!match) {
         return null;
     }

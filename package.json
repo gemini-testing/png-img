@@ -7,13 +7,14 @@
     "node": ">= 4.0.0"
   },
   "dependencies": {
-    "nan": "^2.0.4",
-    "inherit": "~2.2.2"
+    "nan": "^2.0.4"
   },
   "devDependencies": {
     "mocha": "^2.0.1",
     "must": "~0.12.0",
-    "node-gyp": "^2.0.2"
+    "node-gyp": "^2.0.2",
+    "sinon": "^1.17.3",
+    "chai": "^3.5.0"
   },
   "scripts": {
     "test": "./dev/test",

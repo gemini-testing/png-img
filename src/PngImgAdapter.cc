@@ -13,7 +13,6 @@ static Nan::Persistent<FunctionTemplate> pngImgAdapterConstructor;
 ///
 void PngImgAdapter::Init() {
     Local<FunctionTemplate> tpl = Nan::New<FunctionTemplate>(PngImgAdapter::New);
-    pngImgAdapterConstructor.Reset(tpl);
 
     tpl->SetClassName(Nan::New<String>("PngImg").ToLocalChecked());
     tpl->InstanceTemplate()->SetInternalFieldCount(1);
@@ -24,7 +23,11 @@ void PngImgAdapter::Init() {
     SetPrototypeMethod(tpl, "get", PngImgAdapter::Get);
     SetPrototypeMethod(tpl, "fill", PngImgAdapter::Fill);
     SetPrototypeMethod(tpl, "crop", PngImgAdapter::Crop);
+    SetPrototypeMethod(tpl, "setSize", PngImgAdapter::SetSize);
+    SetPrototypeMethod(tpl, "insert", PngImgAdapter::Insert);
     SetPrototypeMethod(tpl, "write", PngImgAdapter::Write);
+
+    pngImgAdapterConstructor.Reset(tpl);
 }
 
 ///
@@ -135,6 +138,29 @@ NAN_METHOD(PngImgAdapter::Crop) {
     if(!ok) {
         return ThrowError(img.LastError().c_str());
     }
+
+    info.GetReturnValue().SetUndefined();
+}
+
+///
+NAN_METHOD(PngImgAdapter::SetSize) {
+    PngImg& img = GetObj(info)->img_;
+    img.SetSize(
+        info[0]->Uint32Value(),
+        info[1]->Uint32Value()
+    );
+
+    info.GetReturnValue().SetUndefined();
+}
+
+///
+NAN_METHOD(PngImgAdapter::Insert) {
+    PngImg& img = GetObj(info)->img_;
+    img.Insert(
+        node::ObjectWrap::Unwrap<PngImgAdapter>(info[0]->ToObject())->img_,
+        info[1]->Uint32Value(),
+        info[2]->Uint32Value()
+    );
 
     info.GetReturnValue().SetUndefined();
 }

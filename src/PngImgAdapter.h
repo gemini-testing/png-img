@@ -22,6 +22,8 @@ private:
     static NAN_METHOD(Get);
     static NAN_METHOD(Fill);
     static NAN_METHOD(Crop);
+    static NAN_METHOD(SetSize);
+    static NAN_METHOD(Insert);
     static NAN_METHOD(Write);
 
     template <class T> static PngImgAdapter* GetObj(const T& args);
