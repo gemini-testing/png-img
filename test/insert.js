@@ -1,18 +1,18 @@
 'use strict';
 
-const PngImg = require('../'),
-    fs = require('fs'),
-    path = require('path'),
-    rawImg = fs.readFileSync(path.join(__dirname, 'black2x2rgba.png')),
+const PngImg = require('../');
+const fs = require('fs');
+const path = require('path');
+const rawImg = fs.readFileSync(path.join(__dirname, 'black2x2rgba.png'));
 
-    RED = {r: 255, g: 0, b: 0, a: 255},
-    GREEN = {r: 0, g: 255, b: 0, a: 255},
-    BLUE = {r: 0, g: 0, b: 255, a: 255};
+const RED = {r: 255, g: 0, b: 0, a: 255};
+const GREEN = {r: 0, g: 255, b: 0, a: 255};
+const BLUE = {r: 0, g: 0, b: 255, a: 255};
 
 describe('insert', () => {
     it('should return image itself', () => {
-        const img = new PngImg(rawImg),
-            otherImg = new PngImg(rawImg);
+        const img = new PngImg(rawImg);
+        const otherImg = new PngImg(rawImg);
 
         const result = img.insert(otherImg, 0, 0);
 
@@ -20,22 +20,22 @@ describe('insert', () => {
     });
 
     it('should fail if inserted image is out of the bounds of current image', () => {
-        const img = new PngImg(rawImg),
-            otherImg = new PngImg(rawImg);
+        const img = new PngImg(rawImg);
+        const otherImg = new PngImg(rawImg);
 
         assert.throws(() => img.insert(otherImg, 1, 1), /out of the bounds/i);
     });
 
     it('should fail if inserted image is not a PngImg object', () => {
-        const img = new PngImg(rawImg),
-            badImg = Object.create(null);
+        const img = new PngImg(rawImg);
+        const badImg = Object.create(null);
 
         assert.throws(() => img.insert(badImg), /not a pngimg object/i);
     });
 
     it('should insert image if no intersection', () => {
-        const img = new PngImg(rawImg).fill(0, 0, 2, 2, RED),
-            green = new PngImg(rawImg).fill(0, 0, 2, 2, GREEN);
+        const img = new PngImg(rawImg).fill(0, 0, 2, 2, RED);
+        const green = new PngImg(rawImg).fill(0, 0, 2, 2, GREEN);
 
         img
             .setSize(2, 4)
@@ -64,8 +64,8 @@ describe('insert', () => {
     });
 
     it('should treat undefined offsets as 0', () => {
-        const img = new PngImg(rawImg).fill(0, 0, 2, 2, RED),
-            green = new PngImg(rawImg).fill(0, 0, 2, 2, GREEN);
+        const img = new PngImg(rawImg).fill(0, 0, 2, 2, RED);
+        const green = new PngImg(rawImg).fill(0, 0, 2, 2, GREEN);
 
         img.insert(green);
 
@@ -76,8 +76,8 @@ describe('insert', () => {
     });
 
     it('should insert image without alpha', () => {
-        const img = new PngImg(rawImg).setSize(3, 2).fill(0, 0, 3, 1, RED),
-            imgNoAlpha = new PngImg(fs.readFileSync(path.join(__dirname, 'rgb3x1_noalpha.png')));
+        const img = new PngImg(rawImg).setSize(3, 2).fill(0, 0, 3, 1, RED);
+        const imgNoAlpha = new PngImg(fs.readFileSync(path.join(__dirname, 'rgb3x1_noalpha.png')));
 
         img.insert(imgNoAlpha, 0, 1);
 

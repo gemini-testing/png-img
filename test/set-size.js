@@ -1,12 +1,12 @@
 'use strict';
 
-const PngImg = require('../'),
-    fs = require('fs'),
-    path = require('path'),
-    rawImg = fs.readFileSync(path.join(__dirname, 'black2x2rgba.png')),
+const PngImg = require('../');
+const fs = require('fs');
+const path = require('path');
+const rawImg = fs.readFileSync(path.join(__dirname, 'black2x2rgba.png'));
 
-    RED = {r: 255, g: 0, b: 0, a: 0},
-    BLACK = {r: 0, g: 0, b: 0, a: 0};
+const RED = {r: 255, g: 0, b: 0, a: 0};
+const BLACK = {r: 0, g: 0, b: 0, a: 0};
 
 describe('setSize', () => {
     const sandbox = sinon.sandbox.create();
@@ -30,7 +30,7 @@ describe('setSize', () => {
         assert.deepEqual(img.size(), {width: 3, height: 3});
     });
 
-    it('should return image itself', () => {
+    it('should return self', () => {
         const img = new PngImg(rawImg);
 
         const result = img.setSize(3, 3);

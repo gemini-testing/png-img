@@ -1,11 +1,11 @@
 'use strict';
 
-var PngImg = require('../'),
-    RGBToString = require('../utils').RGBToString,
-    fs = require('fs'),
-    path = require('path'),
-    demand = require('must'),
-    rawImg = fs.readFileSync(path.join(__dirname, 'test32x32.png'));
+const PngImg = require('../');
+const RGBToString = require('../utils').RGBToString;
+const fs = require('fs');
+const path = require('path');
+const demand = require('must');
+const rawImg = fs.readFileSync(path.join(__dirname, 'test32x32.png'));
 
 describe('constructor', function() {
     it('should throw if not a buffer passed', function() {
@@ -28,7 +28,7 @@ describe('constructor', function() {
 });
 
 describe('size', function() {
-    var img = new PngImg(rawImg);
+    const img = new PngImg(rawImg);
 
     it('should return img size', function() {
         img.size().width.must.be(32);
@@ -37,7 +37,7 @@ describe('size', function() {
 });
 
 describe('crop', function() {
-    var img;
+    let img;
 
     beforeEach(function() {
         img = new PngImg(rawImg);
@@ -56,7 +56,7 @@ describe('crop', function() {
     });
 
     it('should treat bad offset as zeroes', function() {
-        var size = img.size();
+        const size = img.size();
         img.crop('adsf', {}, size.width, size.height);
         img.size().width.must.be(size.width);
         img.size().height.must.be(size.height);
@@ -87,7 +87,7 @@ describe('crop', function() {
     });
 
     it('should reset size after crop', function() {
-        var newSize = {width: 16, height: 16};
+        const newSize = {width: 16, height: 16};
         img.crop(0, 0, newSize.width, newSize.height);
         img.size().width.must.be(newSize.width);
         img.size().height.must.be(newSize.height);
@@ -99,8 +99,8 @@ describe('crop', function() {
 });
 
 describe('save', function() {
-    var img = new PngImg(rawImg),
-        savePath = path.join(__dirname, 'tmp.png');
+    const img = new PngImg(rawImg);
+    const savePath = path.join(__dirname, 'tmp.png');
 
     afterEach(function() {
         if(fs.existsSync(savePath)) {
@@ -109,7 +109,7 @@ describe('save', function() {
     });
 
     it('should fail if non-exstent path passed', function(done) {
-        var badPath = path.join(__dirname, 'asdf', 'tmp.png');
+        const badPath = path.join(__dirname, 'asdf', 'tmp.png');
         img.save(badPath, function(error) {
             demand(error).not.be(undefined);
             done();
@@ -125,7 +125,7 @@ describe('save', function() {
     });
 
     it('should overwrite existing file', function(done) {
-        var txt = 'o.O';
+        const txt = 'o.O';
         fs.writeFileSync(savePath, txt);
         fs.readFileSync(savePath, {encoding: 'utf8'}).must.be(txt);
 
@@ -139,7 +139,7 @@ describe('save', function() {
     it('should read previously saved img', function(done) {
         img.save(savePath, function(error) {
             demand(error).be(undefined);
-            var img2 = new PngImg(fs.readFileSync(savePath));
+            const img2 = new PngImg(fs.readFileSync(savePath));
             img2.size().width.must.be(img.size().width);
             img2.size().height.must.be(img.size().height);
             done();
@@ -148,8 +148,8 @@ describe('save', function() {
 });
 
 describe('get', function() {
-    var rgbTestRawImg = fs.readFileSync(path.join(__dirname, 'rgba4x1.png')),
-        img = new PngImg(rgbTestRawImg);
+    const rgbTestRawImg = fs.readFileSync(path.join(__dirname, 'rgba4x1.png'));
+    const img = new PngImg(rgbTestRawImg);
 
     it('should throw if x out of the bounds', function() {
         (function(){
@@ -164,10 +164,10 @@ describe('get', function() {
     });
 
     it('should return pixel colors and alpha', function() {
-        var r = img.get(0, 0),
-            g = img.get(1, 0),
-            b = img.get(2, 0),
-            a = img.get(3, 0);
+        const r = img.get(0, 0);
+        const g = img.get(1, 0);
+        const b = img.get(2, 0);
+        const a = img.get(3, 0);
 
         r.r.must.be(255); r.g.must.be(0); r.b.must.be(0); r.a.must.be(255);
         g.r.must.be(0); g.g.must.be(255); g.b.must.be(0); g.a.must.be(255);
@@ -176,11 +176,11 @@ describe('get', function() {
     });
 
     it('should return alpha 255 if image without alpha', function() {
-        var noAlphaRaw = fs.readFileSync(path.join(__dirname, 'rgb3x1_noalpha.png')),
-            noAlphaImg = new PngImg(noAlphaRaw),
-            r = noAlphaImg.get(0, 0),
-            g = noAlphaImg.get(1, 0),
-            b = noAlphaImg.get(2, 0);
+        const noAlphaRaw = fs.readFileSync(path.join(__dirname, 'rgb3x1_noalpha.png'));
+        const noAlphaImg = new PngImg(noAlphaRaw);
+        const r = noAlphaImg.get(0, 0);
+        const g = noAlphaImg.get(1, 0);
+        const b = noAlphaImg.get(2, 0);
 
         r.r.must.be(255); r.g.must.be(0); r.b.must.be(0); r.a.must.be(255);
         g.r.must.be(0); g.g.must.be(255); g.b.must.be(0); g.a.must.be(255);
@@ -189,9 +189,9 @@ describe('get', function() {
 });
 
 describe('fill', function() {
-    var rgbaTestRawImg = fs.readFileSync(path.join(__dirname, 'rgba4x1.png')),
-        cyan = '#00ffff',
-        img;
+    const rgbaTestRawImg = fs.readFileSync(path.join(__dirname, 'rgba4x1.png'));
+    const cyan = '#00ffff';
+    let img;
 
     beforeEach(function() {
         img = new PngImg(rgbaTestRawImg);
@@ -244,43 +244,43 @@ describe('fill', function() {
     });
 
     it('should fill with color passed as rgb object', function() {
-        var white = {r: 255, g: 255, b: 255, a: 255};
+        const white = {r: 255, g: 255, b: 255, a: 255};
         img.fill(0, 0, 1, 1, white);
         img.get(0, 0).must.eql(white);
     });
 
     it('should fill with color passed as string', function() {
-        var white = '#ffffff';
+        const white = '#ffffff';
         img.fill(0, 0, 1, 1, white);
         RGBToString(img.get(0, 0)).must.be(white);
     });
 
     it('should fill using alpha', function() {
-        var transparentWhite = {r: 255, g: 255, b: 255, a: 50};
+        const transparentWhite = {r: 255, g: 255, b: 255, a: 50};
         img.fill(0, 0, 1, 1, transparentWhite);
         img.get(0, 0).must.eql(transparentWhite);
     });
 
     it('should ignore alpha in image without alpha', function() {
-        var noAlphaRaw = fs.readFileSync(path.join(__dirname, 'rgb3x1_noalpha.png')),
-            noAlphaImg = new PngImg(noAlphaRaw),
-            transparentWhite = {r: 255, g: 255, b: 255, a: 50};
+        const noAlphaRaw = fs.readFileSync(path.join(__dirname, 'rgb3x1_noalpha.png'));
+        const noAlphaImg = new PngImg(noAlphaRaw);
+        const transparentWhite = {r: 255, g: 255, b: 255, a: 50};
 
         noAlphaImg.fill(0, 0, 1, 1, transparentWhite);
         noAlphaImg.get(0, 0).a.must.be(255);
     });
 
     it('should fill few rows/columns correctly', function() {
-        var bigImg = new PngImg(rawImg),
-            offsetX = 8,
-            offsetY = 8,
-            width = 16,
-            height = 16;
+        const bigImg = new PngImg(rawImg);
+        const offsetX = 8;
+        const offsetY = 8;
+        const width = 16;
+        const height = 16;
 
         bigImg.fill(offsetX, offsetY, width, height, cyan);
-        for(var i = 0; i < bigImg.size().width; ++i) {
-            for(var j = 0; j < bigImg.size().height; ++j) {
-                var pxl = RGBToString(bigImg.get(i, j));
+        for(let i = 0; i < bigImg.size().width; ++i) {
+            for(let j = 0; j < bigImg.size().height; ++j) {
+                const pxl = RGBToString(bigImg.get(i, j));
                 if(i < offsetX || j < offsetY || i >= offsetX + width || j >= offsetY + height) {
                     pxl.must.not.be(cyan);
                 } else {
@@ -296,8 +296,8 @@ describe('fill', function() {
 });
 
 describe('set', function() {
-    var rgbaTestRawImg = fs.readFileSync(path.join(__dirname, 'rgba4x1.png')),
-        img;
+    const rgbaTestRawImg = fs.readFileSync(path.join(__dirname, 'rgba4x1.png'));
+    let img;
 
     beforeEach(function() {
         img = new PngImg(rgbaTestRawImg);
@@ -327,27 +327,27 @@ describe('set', function() {
     });
 
     it('should set color passed as rgb object', function() {
-        var white = {r: 255, g: 255, b: 255, a: 255};
+        const white = {r: 255, g: 255, b: 255, a: 255};
         img.set(0, 0, white);
         img.get(0, 0).must.eql(white);
     });
 
     it('should set color passed as string', function() {
-        var white = '#ffffff';
+        const white = '#ffffff';
         img.set(0, 0, white);
         RGBToString(img.get(0, 0)).must.be(white);
     });
 
     it('should set alpha too', function() {
-        var transparentWhite = {r: 255, g: 255, b: 255, a: 50};
+        const transparentWhite = {r: 255, g: 255, b: 255, a: 50};
         img.set(0, 0, transparentWhite);
         img.get(0, 0).must.eql(transparentWhite);
     });
 
     it('should ignore alpha in image without alpha', function() {
-        var noAlphaRaw = fs.readFileSync(path.join(__dirname, 'rgb3x1_noalpha.png')),
-            noAlphaImg = new PngImg(noAlphaRaw),
-            transparentWhite = {r: 255, g: 255, b: 255, a: 50};
+        const noAlphaRaw = fs.readFileSync(path.join(__dirname, 'rgb3x1_noalpha.png'));
+        const noAlphaImg = new PngImg(noAlphaRaw);
+        const transparentWhite = {r: 255, g: 255, b: 255, a: 50};
 
         noAlphaImg.set(0, 0, transparentWhite);
         noAlphaImg.get(0, 0).a.must.be(255);

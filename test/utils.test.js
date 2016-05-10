@@ -1,11 +1,11 @@
 'use strict';
 
-var utils = require('../utils'),
-    demand = require('must');
+const utils = require('../utils');
+const demand = require('must');
 
 describe('utils', function() {
     describe('RGBToString', function() {
-        var RGBToString = utils.RGBToString;
+        const RGBToString = utils.RGBToString;
 
         it('should convert rgb object to "#XXXXXX" string', function() {
             RGBToString({r: 255, g: 255, b: 255}).must.be('#ffffff');
@@ -19,7 +19,7 @@ describe('utils', function() {
     });
 
     describe('StringToRGB', function() {
-        var stringToRGBA = utils.stringToRGBA;
+        const stringToRGBA = utils.stringToRGBA;
 
         it('should convert "#XXXXXX" string to rgb object', function() {
             stringToRGBA('#ffffff').must.eql({r: 255, g: 255, b: 255, a: 255});

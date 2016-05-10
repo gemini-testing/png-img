@@ -1,7 +1,7 @@
 'use strict';
 
-var utils = require('./utils'),
-    PngImgImpl = require('./build/Release/png_img').PngImg;
+const utils = require('./utils');
+const PngImgImpl = require('./build/Release/png_img').PngImg;
 
 module.exports = class PngImg {
     ///
@@ -78,7 +78,7 @@ module.exports = class PngImg {
      * @param {Number} height
      */
     setSize(width, height) {
-        var size = this.size();
+        const size = this.size();
         if(width <= size.width && height <= size.height) {
             return this.crop(0, 0, width, height);
         }
@@ -98,10 +98,10 @@ module.exports = class PngImg {
             throw new Error('Not a PngImg object');
         }
 
-        var size = img.size(),
-            mySize = this.size();
+        const imgSize = img.size();
+        const mySize = this.size();
 
-        if(offsetX + size.width > mySize.width || offsetY + size.height > mySize.height) {
+        if(offsetX + imgSize.width > mySize.width || offsetY + imgSize.height > mySize.height) {
             throw new Error('Out of the bounds');
         }
 
