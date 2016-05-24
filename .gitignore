@@ -3,3 +3,4 @@
 .vagrant
 win.box
 npm-debug.log
+.sublime-project*
