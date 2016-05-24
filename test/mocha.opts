@@ -1,2 +1,2 @@
---require ./test/setup
+--require ./test/mocha.setup
 -t 0

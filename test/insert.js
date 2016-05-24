@@ -1,9 +1,8 @@
 'use strict';
 
 const PngImg = require('../');
-const fs = require('fs');
-const path = require('path');
-const rawImg = fs.readFileSync(path.join(__dirname, 'black2x2rgba.png'));
+const testData = require('./data');
+const rawImg = testData.readFileSync('black2x2rgba.png');
 
 const RED = {r: 255, g: 0, b: 0, a: 255};
 const GREEN = {r: 0, g: 255, b: 0, a: 255};
@@ -77,7 +76,7 @@ describe('insert', () => {
 
     it('should insert image without alpha', () => {
         const img = new PngImg(rawImg).setSize(3, 2).fill(0, 0, 3, 1, RED);
-        const imgNoAlpha = new PngImg(fs.readFileSync(path.join(__dirname, 'rgb3x1_noalpha.png')));
+        const imgNoAlpha = new PngImg(testData.readFileSync('rgb3x1_noalpha.png'));
 
         img.insert(imgNoAlpha, 0, 1);
 
