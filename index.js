@@ -110,6 +110,22 @@ module.exports = class PngImg {
     }
 
     /**
+     * Rotates image 90 degrees clockwise
+     */
+    rotateRight() {
+        this.img_.rotateRight();
+        return this;
+    }
+
+    /**
+     * Rotates image 90 degrees counterclockwise
+     */
+    rotateLeft() {
+        this.img_.rotateLeft();
+        return this;
+    }
+
+    /**
      * Save image to file
      * @param  {String}   file     path to file
      * @param  {SaveCallback} callback
