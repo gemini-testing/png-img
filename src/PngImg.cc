@@ -136,6 +136,19 @@ bool PngImg::Crop(png_uint_32 offsetX, png_uint_32 offsetY, png_uint_32 width, p
 }
 
 ///
+bool PngImg::InBounds_(png_uint_32 offsetX, png_uint_32 offsetY, png_uint_32 width, png_uint_32 height) const
+{
+    return width != 0
+        && height != 0
+        && width <= info_.width
+        && height <= info_.height
+        && offsetX < info_.width
+        && offsetY < info_.height
+        && offsetX + width <= info_.width
+        && offsetY + height <= info_.height;
+}
+
+///
 void PngImg::SetSize(png_uint_32 width, png_uint_32 height)
 {
     const ImgInfo oldInfo = info_;
@@ -181,16 +194,41 @@ void PngImg::CopyRows_(const vector<png_bytep>& rowPtrs, const size_t numRows, c
 }
 
 ///
-bool PngImg::InBounds_(png_uint_32 offsetX, png_uint_32 offsetY, png_uint_32 width, png_uint_32 height) const
-{
-    return width != 0
-        && height != 0
-        && width <= info_.width
-        && height <= info_.height
-        && offsetX < info_.width
-        && offsetY < info_.height
-        && offsetX + width <= info_.width
-        && offsetY + height <= info_.height;
+void PngImg::RotateRight() {
+    Rotate_([](const Point& p, const ImgInfo& img) {
+        return Point{img.height - p.y - 1, p.x};
+    });
+}
+
+///
+void PngImg::RotateLeft() {
+    Rotate_([](const Point& p, const ImgInfo& img) {
+        return Point{p.y, img.width - p.x - 1};
+    });
+}
+
+///
+void PngImg::Rotate_(function<Point(const Point&, const ImgInfo&)> moveFn) {
+    const ImgInfo oldInfo = info_;
+    const unique_ptr<char[]> oldData{data_};
+    const vector<png_bytep> oldRowPtrs{rowPtrs_};
+
+    info_.width = oldInfo.height;
+    info_.height = oldInfo.width;
+    info_.rowbytes = info_.pxlsize * info_.width;
+
+    InitStorage_();
+
+    for(size_t x = 0; x < oldInfo.width; ++x) {
+        for(size_t y = 0; y < oldInfo.height; ++y) {
+            auto newPoint = moveFn({x, y}, oldInfo);
+
+            png_bytep p = oldRowPtrs[y] + oldInfo.pxlsize * x;
+            png_bytep newP = rowPtrs_[newPoint.y] + info_.pxlsize * newPoint.x;
+
+            copy(p, p + info_.pxlsize, newP);
+        }
+    }
 }
 
 ///

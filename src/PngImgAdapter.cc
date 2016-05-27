@@ -25,6 +25,8 @@ void PngImgAdapter::Init() {
     SetPrototypeMethod(tpl, "crop", PngImgAdapter::Crop);
     SetPrototypeMethod(tpl, "setSize", PngImgAdapter::SetSize);
     SetPrototypeMethod(tpl, "insert", PngImgAdapter::Insert);
+    SetPrototypeMethod(tpl, "rotateRight", PngImgAdapter::RotateRight);
+    SetPrototypeMethod(tpl, "rotateLeft", PngImgAdapter::RotateLeft);
     SetPrototypeMethod(tpl, "write", PngImgAdapter::Write);
 
     pngImgAdapterConstructor.Reset(tpl);
@@ -163,6 +165,18 @@ NAN_METHOD(PngImgAdapter::Insert) {
     );
 
     info.GetReturnValue().SetUndefined();
+}
+
+///
+NAN_METHOD(PngImgAdapter::RotateRight) {
+    PngImg& img = GetObj(info)->img_;
+    img.RotateRight();
+}
+
+///
+NAN_METHOD(PngImgAdapter::RotateLeft) {
+    PngImg& img = GetObj(info)->img_;
+    img.RotateLeft();
 }
 
 ///

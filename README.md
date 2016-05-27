@@ -138,6 +138,12 @@ img
   .insert(otherImg, 0, img.size().height);
  ```
 
+### rotateRight()
+Rotates image 90 degrees clockwise
+
+### rotateLeft()
+Rotates image 90 degress counterclockwise
+
 ### save(file, callback)
 Save image to file. Asynchronous operation.
 

@@ -17,7 +17,7 @@
   },
   "scripts": {
     "test": "./dev/test",
-    "build": "node-gyp rebuild"
+    "build": "node-gyp build"
   },
   "author": "Anton Usmansky <anton.usmansky@gmail.com> (https://github.com/j0tunn)",
   "license": "MIT",
