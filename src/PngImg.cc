@@ -60,10 +60,10 @@ void PngImg::ReadInfo_(PngReadStruct& rs) {
 ///
 void PngImg::InitStorage_() {
     rowPtrs_.resize(info_.height, nullptr);
-    data_ = new char[info_.height * info_.rowbytes];
+    data_ = new png_byte[info_.height * info_.rowbytes];
 
     for(size_t i = 0; i < info_.height; ++i) {
-        rowPtrs_[i] = (png_bytep)data_ + i * info_.rowbytes;
+        rowPtrs_[i] = data_ + i * info_.rowbytes;
     }
 }
 
@@ -128,6 +128,7 @@ bool PngImg::Crop(png_uint_32 offsetX, png_uint_32 offsetY, png_uint_32 width, p
     for(size_t i = 0; i < height; ++i) {
         rowPtrs_[i] = rowPtrs_[i + offsetY] + offsetX * info_.pxlsize;
     }
+    rowPtrs_.resize(height);
 
     info_.width = width;
     info_.height = height;
@@ -152,7 +153,7 @@ bool PngImg::InBounds_(png_uint_32 offsetX, png_uint_32 offsetY, png_uint_32 wid
 void PngImg::SetSize(png_uint_32 width, png_uint_32 height)
 {
     const ImgInfo oldInfo = info_;
-    const unique_ptr<char[]> oldData{data_};
+    const unique_ptr<png_byte[]> oldData{data_};
     const vector<png_bytep> oldRowPtrs{rowPtrs_};
 
     info_.width = width;
@@ -210,7 +211,7 @@ void PngImg::RotateLeft() {
 ///
 void PngImg::Rotate_(function<Point(const Point&, const ImgInfo&)> moveFn) {
     const ImgInfo oldInfo = info_;
-    const unique_ptr<char[]> oldData{data_};
+    const unique_ptr<png_byte[]> oldData{data_};
     const vector<png_bytep> oldRowPtrs{rowPtrs_};
 
     info_.width = oldInfo.height;
@@ -261,8 +262,8 @@ bool PngImg::Write(const string& file) {
         info_.compression_type,
         info_.filter_type
     );
-    png_write_info(pws.pngPtr, pws.infoPtr);
-    png_write_image(pws.pngPtr, &rowPtrs_[0]);
-    png_write_end(pws.pngPtr, NULL);
+    png_set_rows(pws.pngPtr, pws.infoPtr, &rowPtrs_[0]);
+    png_write_png(pws.pngPtr, pws.infoPtr, PNG_TRANSFORM_IDENTITY, NULL);
+
     return true;
 }
