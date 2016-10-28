@@ -185,7 +185,7 @@ NAN_METHOD(PngImgAdapter::Write) {
     Local<String> file = info[0].As<String>();
     Callback* callback = new Callback(info[1].As<Function>());
 
-    AsyncQueueWorker(new SaveWorker(callback, img, *v8::String::Utf8Value(file)));
+    AsyncQueueWorker(new SaveWorker(callback, img, *v8::String::Utf8Value(file), info.This()));
     info.GetReturnValue().SetUndefined();
 }
 

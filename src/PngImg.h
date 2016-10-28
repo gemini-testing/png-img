@@ -65,7 +65,7 @@ private:
 
     ImgInfo info_;
     std::vector<png_bytep> rowPtrs_;
-    char* data_;
+    png_bytep data_;
     mutable std::string error_;
 };
 
