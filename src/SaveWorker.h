@@ -12,11 +12,13 @@ class SaveWorker
 {
 public:
     ///
-    SaveWorker(Nan::Callback* cb, PngImg& img, std::string file)
+    SaveWorker(Nan::Callback* cb, PngImg& img, std::string file, const v8::Local<v8::Object>& obj)
         : Nan::AsyncWorker(cb)
         , img_(img)
         , file_(file)
-    {}
+    {
+        SaveToPersistent(0u, obj);
+    }
 
     ///
     void Execute() {
