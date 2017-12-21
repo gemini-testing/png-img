@@ -144,6 +144,19 @@ Rotates image 90 degrees clockwise
 ### rotateLeft()
 Rotates image 90 degress counterclockwise
 
+### copyFrom(img, rect)
+Copies a rectaingle area of a passed image to a current image pixel by pixel.
+
+Arguments:
+ * `img` - image to copy from. Should be a PngImg object
+ * `rect` - rectaingle area of an image
+
+ ```js
+ const destImg = new PngImg(/*...*/);
+ const srcImg = new PngImg(/*..*/);
+ destImg.copyFrom(srcImg, {top: 1, left: 1, widht: 1, height: 1});
+ ```
+
 ### save(file, callback)
 Save image to file. Asynchronous operation.
 
