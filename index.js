@@ -126,6 +126,22 @@ module.exports = class PngImg {
     }
 
     /**
+     * @param {PngImg}
+     * @param {Object} rect – {top, left, width, height}
+     */
+    copyFrom(srcImg, rect) {
+        for (let x = rect.left; x < rect.width; ++x) {
+            for (let y = rect.top; y < rect.height; ++y) {
+                const color = srcImg.get(x, y);
+
+                this.set(x, y, color);
+            }
+        }
+
+        return this;
+    }
+
+    /**
      * Save image to file
      * @param  {String}   file     path to file
      * @param  {SaveCallback} callback
