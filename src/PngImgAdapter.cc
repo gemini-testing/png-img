@@ -101,7 +101,7 @@ NAN_METHOD(PngImgAdapter::Get) {
 ///
 Pxl RGBObjToPxl(const Local<Object>& obj) {
     auto getIntVal_ = [&obj](const string& key) {
-        String::Utf8Value val(obj->Get(Nan::New<String>(key.c_str()).ToLocalChecked()));
+        Nan::Utf8String val(obj->Get(Nan::New<String>(key.c_str()).ToLocalChecked()));
         return stoi(*val);
     };
 
@@ -187,7 +187,7 @@ NAN_METHOD(PngImgAdapter::Write) {
     Local<String> file = info[0].As<String>();
     Callback* callback = new Callback(info[1].As<Function>());
 
-    AsyncQueueWorker(new SaveWorker(callback, img, *v8::String::Utf8Value(file), info.This()));
+    AsyncQueueWorker(new SaveWorker(callback, img, *Nan::Utf8String(file), info.This()));
     info.GetReturnValue().SetUndefined();
 }
 
