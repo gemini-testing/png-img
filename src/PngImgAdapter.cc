@@ -49,7 +49,9 @@ NAN_METHOD(PngImgAdapter::NewInstance) {
     Local<FunctionTemplate> constructorHandle = Nan::New(pngImgAdapterConstructor);
     Local<Object> imgBuffer = info[0].As<Object>();
     Handle<Value> argv[] = { imgBuffer };
-    info.GetReturnValue().Set(constructorHandle->GetFunction()->NewInstance(1, argv));
+
+    Local<Object> instance = Nan::NewInstance(constructorHandle->GetFunction(), 1, argv).ToLocalChecked();
+    info.GetReturnValue().Set(instance);
 }
 
 ///
