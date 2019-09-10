@@ -47,10 +47,10 @@ NAN_METHOD(PngImgAdapter::NewInstance) {
     }
 
     Local<FunctionTemplate> constructorHandle = Nan::New(pngImgAdapterConstructor);
-    Local<Object> imgBuffer = info[0].As<Object>();
-    Handle<Value> argv[] = { imgBuffer };
+    Local<Value> imgBuffer = info[0];
+    Local<Value> argv[] = { imgBuffer };
 
-    Local<Object> instance = Nan::NewInstance(constructorHandle->GetFunction(), 1, argv).ToLocalChecked();
+    Local<Object> instance = Nan::NewInstance(Nan::GetFunction(constructorHandle).ToLocalChecked(), 1, argv).ToLocalChecked();
     info.GetReturnValue().Set(instance);
 }
 
@@ -84,7 +84,7 @@ NAN_PROPERTY_GETTER(PngImgAdapter::Height) {
 ///
 NAN_METHOD(PngImgAdapter::Get) {
     PngImg& img = GetObj(info)->img_;
-    auto pPxl = img.Get(info[0]->Uint32Value(), info[1]->Uint32Value());
+    auto pPxl = img.Get(Nan::To<uint32_t>(info[0]).ToChecked(), Nan::To<uint32_t>(info[1]).ToChecked());
     if(!pPxl) {
        return ThrowError(img.LastError().c_str());
     }
@@ -117,10 +117,10 @@ Pxl RGBObjToPxl(const Local<Object>& obj) {
 NAN_METHOD(PngImgAdapter::Fill) {
     PngImg& img = GetObj(info)->img_;
     const bool ok = img.Fill(
-        info[0]->Uint32Value(),
-        info[1]->Uint32Value(),
-        info[2]->Uint32Value(),
-        info[3]->Uint32Value(),
+        Nan::To<uint32_t>(info[0]).ToChecked(),
+        Nan::To<uint32_t>(info[1]).ToChecked(),
+        Nan::To<uint32_t>(info[2]).ToChecked(),
+        Nan::To<uint32_t>(info[3]).ToChecked(),
         RGBObjToPxl(info[4].As<Object>())
     );
     if(!ok) {
@@ -134,10 +134,10 @@ NAN_METHOD(PngImgAdapter::Fill) {
 NAN_METHOD(PngImgAdapter::Crop) {
     PngImg& img = GetObj(info)->img_;
     const bool ok = img.Crop(
-        info[0]->Uint32Value(),
-        info[1]->Uint32Value(),
-        info[2]->Uint32Value(),
-        info[3]->Uint32Value()
+        Nan::To<uint32_t>(info[0]).ToChecked(),
+        Nan::To<uint32_t>(info[1]).ToChecked(),
+        Nan::To<uint32_t>(info[2]).ToChecked(),
+        Nan::To<uint32_t>(info[3]).ToChecked()
     );
     if(!ok) {
         return ThrowError(img.LastError().c_str());
@@ -150,8 +150,8 @@ NAN_METHOD(PngImgAdapter::Crop) {
 NAN_METHOD(PngImgAdapter::SetSize) {
     PngImg& img = GetObj(info)->img_;
     img.SetSize(
-        info[0]->Uint32Value(),
-        info[1]->Uint32Value()
+        Nan::To<uint32_t>(info[0]).ToChecked(),
+        Nan::To<uint32_t>(info[1]).ToChecked()
     );
 
     info.GetReturnValue().SetUndefined();
@@ -161,9 +161,9 @@ NAN_METHOD(PngImgAdapter::SetSize) {
 NAN_METHOD(PngImgAdapter::Insert) {
     PngImg& img = GetObj(info)->img_;
     img.Insert(
-        node::ObjectWrap::Unwrap<PngImgAdapter>(info[0]->ToObject())->img_,
-        info[1]->Uint32Value(),
-        info[2]->Uint32Value()
+        node::ObjectWrap::Unwrap<PngImgAdapter>(Nan::To<Object>(info[0]).ToLocalChecked())->img_,
+        Nan::To<uint32_t>(info[1]).ToChecked(),
+        Nan::To<uint32_t>(info[2]).ToChecked()
     );
 
     info.GetReturnValue().SetUndefined();
