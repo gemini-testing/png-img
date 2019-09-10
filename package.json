@@ -7,7 +7,7 @@
     "node": ">= 4.0.0"
   },
   "dependencies": {
-    "nan": "^2.0.4"
+    "nan": "^2.14.0"
   },
   "devDependencies": {
     "mocha": "^2.0.1",
