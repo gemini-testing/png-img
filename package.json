@@ -11,7 +11,7 @@
   },
   "devDependencies": {
     "mocha": "^2.0.1",
-    "node-gyp": "^2.0.2",
+    "node-gyp": "^6.1.0",
     "sinon": "^1.17.3",
     "chai": "^3.5.0"
   },
