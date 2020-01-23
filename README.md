@@ -3,14 +3,20 @@ png-img
 
 [![Build Status](https://travis-ci.org/gemini-testing/png-img.svg)](https://travis-ci.org/gemini-testing/png-img)
 
-Lite self-contained png image processing library for OS X and Linux.
+Lite self-contained png image processing library for macOS and Linux.
 
 ## Requirements
-Linux: Depends on GCC 4.6 or later
+### Linux
+- Depends on [GCC](https://gcc.gnu.org/) 4.6+
 
-OS X: Tested with Xcode 6.0 development tools (but should be ok with Xcode 5.0 also)
+### macOs
+- Tested with Xcode 6.0 (but should also work with 5.0) and Xcode 11.3
+- [`node-gyp` installation docs](https://github.com/nodejs/node-gyp#on-macos)
+- [`node-gyp` installation docs for Calalina](https://github.com/nodejs/node-gyp/blob/master/macOS_Catalina.md)
 
-Windows: Tested with MSVC 2013 Express (see [docs](https://github.com/nodejs/node-gyp#on-windows) how to install node-gyp on Windows)
+### Windows
+- Tested with MSVC 2013 Express
+- [`node-gyp` installation docs](https://github.com/nodejs/node-gyp#on-windows)
 
 ## Installation
 ```
@@ -170,16 +176,16 @@ npm run build
 This will build native node extension and place it to the `compiled` directory
 
 ## Vagrant
-Use vagrant to build and test on Linux and Windows from OS X.
+Use [Vagrant](https://www.vagrantup.com/) to build and test on Linux and Windows from macOS.
 
-Tested with `vagrant 1.7` and `VirtualBox 4.3`.
+Tested with Vagrant 1.7 and [VirtualBox](https://www.virtualbox.org/) 4.3.
 
-1. Install `vagrant` and `VirtualBox`.
-2. Create windows vagrant box (see [howto](dev/vagrant-win-box.md))
+1. Install Vagrant and VirtualBox.
+2. Create Windows vagrant box (see [howto](dev/vagrant-win-box.md))
 3. Run `vagrant up --provider virtualbox`
 4. Specify `OS` env variable to run and test on specific platform:
   - `npm run build`, `npm test` - current platform
-  - `OS=linux npm test` - Ubuntu 14.04
+  - `OS=linux npm test` - [Ubuntu](https://ubuntu.com/) 14.04
   - `OS=linux-old npm test` - Ubuntu 12.04
-  - `OS=win npm test` - windows
+  - `OS=win npm test` - Windows
   - `OS=all npm test` - all
