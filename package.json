@@ -4,20 +4,23 @@
   "description": "PNG Image",
   "main": "index.js",
   "engines": {
-    "node": ">= 4.0.0"
+    "node": ">= 8.0.0"
   },
   "dependencies": {
-    "nan": "^2.14.0"
+    "nan": "^2.14.0",
+    "prebuild-install": "^5.3.5"
   },
   "devDependencies": {
+    "chai": "^3.5.0",
     "mocha": "^2.0.1",
     "node-gyp": "^6.1.0",
-    "sinon": "^1.17.3",
-    "chai": "^3.5.0"
+    "prebuild": "^10.0.0",
+    "sinon": "^1.17.3"
   },
   "scripts": {
-    "test": "./dev/test",
-    "build": "node-gyp build"
+    "install": "prebuild-install || npm run build",
+    "build": "node-gyp rebuild",
+    "test": "./dev/test"
   },
   "author": "Anton Usmansky <anton.usmansky@gmail.com> (https://github.com/j0tunn)",
   "license": "MIT",
