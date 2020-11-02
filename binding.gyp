@@ -10,6 +10,8 @@
         "<(src_dir)/PngImgAdapter.cc",
         "<(src_dir)/PngImg.cc"
       ],
+      "cflags!": [ "-fno-exceptions" ],
+      "cflags_cc!": [ "-fno-exceptions" ],
       "include_dirs": [
         "<!(node -e \"require('nan')\")",
       ],
@@ -21,7 +23,8 @@
             "xcode_settings": {
                 "OTHER_CPLUSPLUSFLAGS" : ["-std=c++11", "-stdlib=libc++"],
                 "OTHER_LDFLAGS": ["-stdlib=libc++"],
-                "MACOSX_DEPLOYMENT_TARGET": "10.7"
+                "MACOSX_DEPLOYMENT_TARGET": "10.7",
+                "GCC_ENABLE_CPP_EXCEPTIONS": "YES"
             }
         }],
         [ "OS=='linux'", {
@@ -30,7 +33,8 @@
         [ "OS=='win'", {
           "msvs_settings": {
             "VCCLCompilerTool": {
-              "AdditionalOptions": ["/EHsc", "/wd4506"]
+              "ExceptionHandling": 1,
+              "AdditionalOptions": ["/wd4506"]
             },
             "VCLinkerTool": {
               "GenerateDebugInformation": "false" # Avoid 'incorrect MSPDB120.DLL version' link error
