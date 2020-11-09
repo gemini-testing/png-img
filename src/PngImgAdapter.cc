@@ -90,10 +90,12 @@ NAN_METHOD(PngImgAdapter::Get) {
     }
 
     Local<Object> obj = Nan::New<Object>();
-    obj->Set(Nan::New<String>("r").ToLocalChecked(), Nan::New<Number>(pPxl->r));
-    obj->Set(Nan::New<String>("g").ToLocalChecked(), Nan::New<Number>(pPxl->g));
-    obj->Set(Nan::New<String>("b").ToLocalChecked(), Nan::New<Number>(pPxl->b));
-    obj->Set(Nan::New<String>("a").ToLocalChecked(), Nan::New<Number>(pPxl->a));
+    Isolate* isolate = Isolate::GetCurrent();
+    Local<Context> context = isolate->GetCurrentContext();
+    obj->Set(context, Nan::New<String>("r").ToLocalChecked(), Nan::New<Number>(pPxl->r));
+    obj->Set(context, Nan::New<String>("g").ToLocalChecked(), Nan::New<Number>(pPxl->g));
+    obj->Set(context, Nan::New<String>("b").ToLocalChecked(), Nan::New<Number>(pPxl->b));
+    obj->Set(context, Nan::New<String>("a").ToLocalChecked(), Nan::New<Number>(pPxl->a));
 
     info.GetReturnValue().Set(obj);
 }
@@ -101,7 +103,9 @@ NAN_METHOD(PngImgAdapter::Get) {
 ///
 Pxl RGBObjToPxl(const Local<Object>& obj) {
     auto getIntVal_ = [&obj](const string& key) {
-        Nan::Utf8String val(obj->Get(Nan::New<String>(key.c_str()).ToLocalChecked()));
+        Isolate* isolate = Isolate::GetCurrent();
+        Local<Context> context = isolate->GetCurrentContext();
+        Nan::Utf8String val((obj->Get(context, Nan::New<String>(key.c_str()).ToLocalChecked())).ToLocalChecked());
         return stoi(*val);
     };
 
@@ -196,4 +200,3 @@ template <class T>
 PngImgAdapter* PngImgAdapter::GetObj(const T& args) {
     return node::ObjectWrap::Unwrap<PngImgAdapter>(args.Holder());
 }
-
