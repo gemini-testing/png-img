@@ -32,7 +32,7 @@ matrix:
         - CC=gcc
 before_deploy:
   - npm run build
-  - $(npm bin)/prebuild -r node -t 12.18.1
+  - $(npm bin)/prebuild -r node -t 12.18.1 -t 14.15.0
 deploy:
   provider: releases
   api_key:
