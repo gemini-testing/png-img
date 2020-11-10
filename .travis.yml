@@ -5,6 +5,7 @@ node_js:
   - "8"
   - "10"
   - "12"
+  - "14"
 
 matrix:
   include:
@@ -31,7 +32,7 @@ matrix:
         - CC=gcc
 before_deploy:
   - npm run build
-  - $(npm bin)/prebuild -r node -t 12.18.1
+  - $(npm bin)/prebuild -r node -t $TRAVIS_NODE_VERSION
 deploy:
   provider: releases
   api_key:
@@ -42,4 +43,3 @@ deploy:
   on:
     repo: gemini-testing/png-img
     tags: true
-    node_js: "12"
