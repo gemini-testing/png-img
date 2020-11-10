@@ -32,7 +32,7 @@ matrix:
         - CC=gcc
 before_deploy:
   - npm run build
-  - $(npm bin)/prebuild -r node -t 12.18.1 -t 14.15.0
+  - $(npm bin)/prebuild -r node -t 8.17.0 -t 10.23.0 -t 12.18.1 -t 14.15.0
 deploy:
   provider: releases
   api_key:
@@ -43,4 +43,3 @@ deploy:
   on:
     repo: gemini-testing/png-img
     tags: true
-    node_js: "12"
