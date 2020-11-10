@@ -32,7 +32,7 @@ matrix:
         - CC=gcc
 before_deploy:
   - npm run build
-  - $(npm bin)/prebuild -r node -t 8.17.0 -t 10.23.0 -t 12.18.1 -t 14.15.0
+  - $(npm bin)/prebuild -r node -t $TRAVIS_NODE_VERSION
 deploy:
   provider: releases
   api_key:
