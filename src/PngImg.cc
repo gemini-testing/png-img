@@ -5,6 +5,7 @@
 #include <string.h>
 #include <memory>
 #include <algorithm>
+#include <stdexcept>
 
 using namespace std;
 
