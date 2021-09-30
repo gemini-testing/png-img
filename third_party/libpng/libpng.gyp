@@ -29,7 +29,10 @@
         'pngwio.c',
         'pngwrite.c',
         'pngwtran.c',
-        'pngwutil.c'
+        'pngwutil.c',
+        'arm/arm_init.c',
+        'arm/filter_neon.S',
+        'arm/filter_neon_intrinsics.c'
       ],
       'include_dirs': [
         '.'
