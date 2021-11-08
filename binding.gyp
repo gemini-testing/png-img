@@ -21,14 +21,14 @@
       "conditions": [
         [ "OS=='mac'", {
             "xcode_settings": {
-                "OTHER_CPLUSPLUSFLAGS" : ["-std=c++11", "-stdlib=libc++"],
+                "OTHER_CPLUSPLUSFLAGS" : ["-std=c++14", "-stdlib=libc++"],
                 "OTHER_LDFLAGS": ["-stdlib=libc++"],
                 "MACOSX_DEPLOYMENT_TARGET": "10.7",
                 "GCC_ENABLE_CPP_EXCEPTIONS": "YES"
             }
         }],
         [ "OS=='linux'", {
-            "cflags": ["-std=c++0x"]
+            "cflags": ["-std=c++14"]
         }],
         [ "OS=='win'", {
           "msvs_settings": {
