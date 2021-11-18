@@ -14,12 +14,12 @@
     "chai": "^3.5.0",
     "mocha": "^2.0.1",
     "node-gyp": "^6.1.0",
-    "prebuild": "^10.0.0",
+    "prebuild": "^11.0.0",
     "sinon": "^1.17.3"
   },
   "scripts": {
-    "install": "prebuild-install || npm run build",
-    "build": "node-gyp rebuild",
+    "install": "prebuild-install || npm run build-release",
+    "build-release": "node-gyp rebuild --release",
     "test": "./dev/test"
   },
   "author": "Anton Usmansky <anton.usmansky@gmail.com> (https://github.com/j0tunn)",

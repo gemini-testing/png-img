@@ -1,0 +1,82 @@
+name: build
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    branches:
+      - master
+  release:
+    types:
+      - released
+
+jobs:
+
+  test:
+    strategy:
+      fail-fast: true
+      max-parallel: 4
+      matrix:
+        os:
+          - ubuntu-18.04
+          - macos-latest
+        node:
+          - 10
+          - 12
+          - 14
+          - 16
+    name: Testing Node ${{ matrix.node }} on ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    steps:
+      - name: Cleanup pre-installed tools
+        run: |
+          # This is a fix for https://github.com/actions/virtual-environments/issues/1918
+          sudo rm -rf /usr/share/dotnet
+          sudo rm -rf /opt/ghc
+          sudo rm -rf "/usr/local/share/boost"
+          sudo rm -rf "$AGENT_TOOLSDIRECTORY"
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Setup Node JS
+        uses: actions/setup-node@v2
+        with:
+          node-version: ${{ matrix.node }}
+      - run: npm install --ignore-scripts
+      - run: npm run build-release
+      - run: npm test
+
+  publish:
+    if: ${{ github.event_name == 'release' }}
+    name: Publishing to NPM
+    runs-on: ubuntu-18.04
+    needs: test
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Setup Node JS
+        uses: actions/setup-node@v2
+        with:
+          node-version: 16
+          registry-url: https://registry.npmjs.org
+      - run: npm publish
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+  prebuild:
+    strategy:
+      matrix:
+        os:
+          - ubuntu-18.04
+          - macos-latest
+    name: Prebuild on ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    needs: publish
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - uses: actions/setup-node@v2
+        with:
+          node-version: 16
+      - run: npm install --ignore-scripts
+      - run: npx --no-install prebuild -r node -t 10.20.0 -t 12.0.0 -t 14.0.0 -t 16.0.0 --include-regex 'png_img.node$' -u ${{ secrets.PREBUILD_GITHUB_TOKEN }}
