@@ -4,3 +4,6 @@
 win.box
 npm-debug.log
 .sublime-project*
+*.d.ts
+*.js
+*.js.map

@@ -3,6 +3,7 @@
   "version": "4.0.1",
   "description": "PNG Image",
   "main": "index.js",
+  "types": "index.d.ts",
   "engines": {
     "node": ">= 12.0.0"
   },
@@ -11,16 +12,22 @@
     "prebuild-install": "^7.0.0"
   },
   "devDependencies": {
+    "@tsconfig/recommended": "^1.0.1",
+    "@types/node": "^12.20.55",
     "chai": "^3.5.0",
     "mocha": "^2.0.1",
     "node-gyp": "^6.1.0",
     "prebuild": "^11.0.0",
-    "sinon": "^1.17.3"
+    "sinon": "^1.17.3",
+    "typescript": "^4.5.3"
   },
   "scripts": {
     "install": "prebuild-install || npm run build-release",
     "build-release": "node-gyp rebuild --release",
-    "test": "./dev/test"
+    "build": "tsc --build",
+    "pretest": "npm run build",
+    "test": "./dev/test",
+    "prepublishOnly": "npm run build"
   },
   "author": "Anton Usmansky <anton.usmansky@gmail.com> (https://github.com/j0tunn)",
   "license": "MIT",
