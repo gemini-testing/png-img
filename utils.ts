@@ -1,25 +1,19 @@
-'use strict';
+import type { Color } from './types';
 
-/**
- * @param {Object} rgb object {r:Number, g:Number, b:Number}
- * @return {String} '#XXXXXX' string
- */
-exports.RGBToString = function(rgb) {
+export function RGBToString(rgb: Color): string {
     return '#' + toStr_(rgb.r) + toStr_(rgb.g) + toStr_(rgb.b);
 
     ///
-    function toStr_(n, minLen) {
+    function toStr_(n: number): string {
         const str = n.toString(16);
+
         return str.length < 2 ? '0' + str : str;
     }
 };
 
-/**
- * @param {String} string '#XXXXXX' string
- * @return {Object} rgb object {r:Number, g:Number, b:Number}
- */
-exports.stringToRGBA = function(string) {
+export function stringToRGBA(string: string): Color | null {
     const match = string.match(/^#([0-9a-f]{2})([0-9a-f]{2})([0-9a-f]{2})$/i);
+
     if(!match) {
         return null;
     }

@@ -1,6 +1,6 @@
 'use strict';
 
-const PngImg = require('../');
+const PngImg = require('../').default;
 const RGBToString = require('../utils').RGBToString;
 const testData = require('./data');
 

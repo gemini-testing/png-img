@@ -1,16 +1,24 @@
-'use strict';
+//@ts-expect-error
+import { PngImg as PngImgImpl } from './build/Release/png_img';
+import * as utils from './utils';
 
-const utils = require('./utils');
-const PngImgImpl = require('./build/Release/png_img').PngImg;
+import type { SaveCallback, Size, Color } from './types';
+export type { SaveCallback, Size, Color };
 
-module.exports = class PngImg {
-    ///
-    constructor(rawImg) {
+export default class PngImg {
+    private img_: PngImgImpl;
+
+    /**
+     * Create PngImg object from passed buffer with image
+     */
+    constructor(rawImg: Buffer) {
         this.img_ = new PngImgImpl(rawImg);
     }
 
-    ///
-    size() {
+    /**
+     * Get image size as an object.
+     */
+    public size(): Size {
         return {
             width: this.img_.width,
             height: this.img_.height
@@ -18,36 +26,38 @@ module.exports = class PngImg {
     }
 
     /**
-     * Get pixel
-     * @param  {Number} x x coordinate (left to right)
-     * @param  {Number} y y coordinate (top to bottom)
-     * @return {Object}  {r, g, b, a}
+     * Get pixel color and alpha.
+     * @param x x coordinate (left to right)
+     * @param y y coordinate (top to bottom)
      */
-    get(x, y) {
+    public get(x: number, y: number): Color {
         return this.img_.get(x, y);
     }
 
     /**
      * Set pixel color
-     * @param {Number} x x coordinate (left to right)
-     * @param {Number} y y coordinate (top to bottom)
-     * @param {Object|String} color as rgb object or as a '#XXXXXX' string
+     * Same as fill(x, y, 1, 1, color)
+     * (shorthand)
+     * @param x x coordinate (left to right)
+     * @param y y coordinate (top to bottom)
+     * @param color color as rgb object or as a '#XXXXXX' string
      */
-    set(x, y, color) {
+    public set(x: number, y: number, color: Color | string): this {
         return this.fill(x, y, 1, 1, color);
     }
 
     /**
-     * Fill region with some color
-     * @param {Number} offsetX offset from left side of the image
-     * @param {Number} offsetY offset from top side of the image
-     * @param {Number} width
-     * @param {Number} height
-     * @param {Object|String} color as rgb object or as a '#XXXXXX' string
+     * Fill region with passed color. Modifies current image.
+     * @param offsetX offset from left side of the image
+     * @param offsetY offset from top side of the image
+     * @param x x coordinate (left to right)
+     * @param y y coordinate (top to bottom)
+     * @param color color as rgb object or as a '#XXXXXX' string
      */
-    fill(offsetX, offsetY, width, height, color) {
+    public fill(offsetX: number, offsetY: number, width: number, height: number, color: Color | string): this {
         if(typeof color === 'string') {
-            var objColor = utils.stringToRGBA(color);
+            const objColor = utils.stringToRGBA(color);
+
             if(!objColor) {
                 throw new Error('Bad color ' + color);
             }
@@ -63,37 +73,45 @@ module.exports = class PngImg {
         };
 
         this.img_.fill(offsetX, offsetY, width, height, color);
-        return this;
-    }
 
-    ///
-    crop(offsetX, offsetY, width, height) {
-        this.img_.crop(offsetX, offsetY, width, height);
         return this;
     }
 
     /**
-     * Set new image size. Doesn't strech image, just add more pixels
-     * @param {Number} width
-     * @param {Number} height
+     * Crop image. Modifies current image.
+     * Throws if new image is not inside the current image.
+     * @param offsetX offset from left side of the image
+     * @param offsetY offset from top side of the image
      */
-    setSize(width, height) {
+    public crop(offsetX: number, offsetY: number, width: number, height: number): this {
+        this.img_.crop(offsetX, offsetY, width, height);
+
+        return this;
+    }
+
+    /**
+     * Sets new image size. Modifies current image.
+     * If new size is less or equal than current size, than crop will be performed.
+     */
+    public setSize(width: number, height: number): this {
         const size = this.size();
+
         if(width <= size.width && height <= size.height) {
             return this.crop(0, 0, width, height);
         }
 
         this.img_.setSize(width, height);
+
         return this;
     }
 
     /**
-     * Inserts image
-     * @param {PngImg} img image to insert
-     * @param {Number} offsetX
-     * @param {Number} offsetY
+     * Inserts image into specified place.
+     * @param img image to insert
+     * @param offsetX offset from left side of the image
+     * @param offsetY offset from top side of the image
      */
-    insert(img, offsetX, offsetY) {
+    public insert(img: PngImg, offsetX: number, offsetY: number): this {
         if(!(img instanceof PngImg)) {
             throw new Error('Not a PngImg object');
         }
@@ -106,36 +124,34 @@ module.exports = class PngImg {
         }
 
         this.img_.insert(img.img_, offsetX, offsetY);
+
         return this;
     }
 
     /**
      * Rotates image 90 degrees clockwise
      */
-    rotateRight() {
+    public rotateRight(): this {
         this.img_.rotateRight();
+
         return this;
     }
 
     /**
      * Rotates image 90 degrees counterclockwise
      */
-    rotateLeft() {
+    public rotateLeft(): this {
         this.img_.rotateLeft();
+
         return this;
     }
 
     /**
-     * Save image to file
-     * @param  {String}   file     path to file
-     * @param  {SaveCallback} callback
+     * Save image to file. Asynchronous operation.
+     * @param file - path to file to save image
+     * @param callback - will be called after save operation finish or on error
      */
-    save(file, callback) {
+    public save(file: string, callback: SaveCallback): void {
         this.img_.write(file, callback);
     }
-
-    /**
-     * @typedef {Function} SaveCallback
-     * @param {String} error error message in case of fail
-     */
 };

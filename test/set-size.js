@@ -1,6 +1,6 @@
 'use strict';
 
-const PngImg = require('../');
+const PngImg = require('../').default;
 const rawImg = require('./data').readFileSync('black2x2rgba.png');
 
 const RED = {r: 255, g: 0, b: 0, a: 0};
