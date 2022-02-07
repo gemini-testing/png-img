@@ -4,6 +4,7 @@
 #include <png.h>
 #include <string.h>
 #include <memory>
+#include <limits>
 #include <algorithm>
 #include <stdexcept>
 
