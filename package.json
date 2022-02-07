@@ -1,6 +1,6 @@
 {
   "name": "png-img",
-  "version": "3.3.4",
+  "version": "3.3.5",
   "description": "PNG Image",
   "main": "index.js",
   "engines": {
