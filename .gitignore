@@ -1,8 +1,8 @@
-/build/
+# /build/
 /node_modules/
-.vagrant
-win.box
-npm-debug.log
-.sublime-project*
-*.js
-*.d.ts
+# .vagrant
+# win.box
+# npm-debug.log
+# .sublime-project*
+# *.js
+# *.d.ts
