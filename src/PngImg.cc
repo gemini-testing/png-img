@@ -2,7 +2,7 @@
 #include "./PngStructs.h"
 
 #include <png.h>
-#include <string.h>
+#include <cstring>
 #include <memory>
 #include <limits>
 #include <algorithm>

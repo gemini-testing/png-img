@@ -1,36 +1,33 @@
 #ifndef PNG_IMG_ADAPTER_H
 #define PNG_IMG_ADAPTER_H
 
-#include <nan.h>
+#include <napi.h>
 #include <functional>
 
 #include "./PngImg.h"
 
 class PngImgAdapter
-    : public node::ObjectWrap
+    : public Napi::ObjectWrap<PngImgAdapter>
 {
 public:
-    static void Init();
-    static NAN_METHOD(NewInstance);
+    static Napi::Function Init(Napi::Env env);
 
-    PngImgAdapter(const char* buf, const size_t bufLen) : img_(buf, bufLen) {}
+    explicit PngImgAdapter(Napi::CallbackInfo& info);
+    ~PngImgAdapter() override;
 
 private:
-    static NAN_METHOD(New);
-    static NAN_PROPERTY_GETTER(Width);
-    static NAN_PROPERTY_GETTER(Height);
-    static NAN_METHOD(Get);
-    static NAN_METHOD(Fill);
-    static NAN_METHOD(Crop);
-    static NAN_METHOD(SetSize);
-    static NAN_METHOD(Insert);
-    static NAN_METHOD(RotateRight);
-    static NAN_METHOD(RotateLeft);
-    static NAN_METHOD(Write);
+    Napi::Value Width(const Napi::CallbackInfo& info);
+    Napi::Value Height(const Napi::CallbackInfo& info);
+    Napi::Value Get(const Napi::CallbackInfo& info);
+    Napi::Value Fill(const Napi::CallbackInfo& info);
+    Napi::Value Crop(const Napi::CallbackInfo& info);
+    Napi::Value SetSize(const Napi::CallbackInfo& info);
+    Napi::Value Insert(const Napi::CallbackInfo& info);
+    void RotateRight(const Napi::CallbackInfo& info);
+    void RotateLeft(const Napi::CallbackInfo& info);
+    Napi::Value Write(const Napi::CallbackInfo& info);
 
-    template <class T> static PngImgAdapter* GetObj(const T& args);
-
-    PngImg img_;
+    PngImg* img_ = nullptr;
 };
 
 #endif  // PNG_IMG_ADAPTER_H

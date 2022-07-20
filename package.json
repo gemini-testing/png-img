@@ -4,10 +4,10 @@
   "description": "PNG Image",
   "main": "index.js",
   "engines": {
-    "node": ">= 8.0.0"
+    "node": ">= 12.0.0"
   },
   "dependencies": {
-    "nan": "^2.14.0",
+    "node-addon-api": "^4.3.0",
     "prebuild-install": "^7.0.0"
   },
   "devDependencies": {

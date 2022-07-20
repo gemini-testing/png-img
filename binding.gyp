@@ -12,8 +12,11 @@
       ],
       "cflags!": [ "-fno-exceptions" ],
       "cflags_cc!": [ "-fno-exceptions" ],
+      "defines": [
+        "NAPI_VERSION=4"
+      ],
       "include_dirs": [
-        "<!(node -e \"require('nan')\")",
+        "<!(node -p \"require('node-addon-api').include_dir\")",
       ],
       "dependencies": [
         "./third_party/libpng/libpng.gyp:libpng"

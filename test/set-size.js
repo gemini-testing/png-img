@@ -28,6 +28,14 @@ describe('setSize', () => {
         assert.deepEqual(img.size(), {width: 3, height: 3});
     });
 
+    it('should coerce new sizes to number', () => {
+        const img = new PngImg(rawImg);
+
+        img.setSize('3', '3');
+
+        assert.deepEqual(img.size(), {width: 3, height: 3});
+    });
+
     it('should return self', () => {
         const img = new PngImg(rawImg);
 

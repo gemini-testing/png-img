@@ -1,29 +1,29 @@
 #ifndef SAVE_WORKER_H
 #define SAVE_WORKER_H
 
-#include <nan.h>
+#include <napi.h>
 #include <string>
+#include <utility>
 
 class PngImg;
 
 ///
 class SaveWorker
-    : public Nan::AsyncWorker
+    : public Napi::AsyncWorker
 {
 public:
     ///
-    SaveWorker(Nan::Callback* cb, PngImg& img, std::string file, const v8::Local<v8::Object>& obj)
-        : Nan::AsyncWorker(cb)
+    SaveWorker(Napi::Function& callback, PngImg& img, std::string file)
+        : Napi::AsyncWorker(callback)
         , img_(img)
-        , file_(file)
+        , file_(std::move(file))
     {
-        SaveToPersistent(0u, obj);
     }
 
     ///
-    void Execute() {
+    void Execute() override {
         if(!img_.Write(file_)) {
-            SetErrorMessage(img_.LastError().c_str());
+            SetError(img_.LastError());
         }
     }
 

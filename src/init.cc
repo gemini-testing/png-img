@@ -1,17 +1,13 @@
-#include <nan.h>
+#include <napi.h>
 #include "./PngImgAdapter.h"
 
-using namespace v8;
-using namespace Nan;
-
 ///
-NAN_MODULE_INIT(InitAll) {
-    PngImgAdapter::Init();
-    Nan::Set(
-        target,
-        New<String>("PngImg").ToLocalChecked(),
-        Nan::GetFunction(New<FunctionTemplate>(PngImgAdapter::NewInstance)).ToLocalChecked()
+Napi::Object InitAll(Napi::Env env, Napi::Object exports) {
+    exports.Set(
+        "PngImg",
+        PngImgAdapter::Init(env)
     );
+    return exports;
 }
 
-NODE_MODULE(png_img, InitAll)
+NODE_API_MODULE(png_img, InitAll)

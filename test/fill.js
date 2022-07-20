@@ -60,6 +60,12 @@ describe('fill', () => {
         assert.equal(RGBToString(img.get(0, 0)), white);
     });
 
+    it('should fill with offset & size coerced to numbers', () => {
+        img.fill('0', '0', '1', '1', cyan);
+
+        assert.equal(RGBToString(img.get(0, 0)), cyan);
+    });
+
     it('should fill using alpha', () => {
         const transparentWhite = {r: 255, g: 255, b: 255, a: 50};
         img.fill(0, 0, 1, 1, transparentWhite);
