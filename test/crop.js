@@ -27,6 +27,17 @@ describe('crop', () => {
         assert.deepEqual(img.size(), size);
     });
 
+    it('should coerce offset to numbers', () => {
+        const size = img.size();
+
+        img.crop('12', '3', String(size.width - 15), String(size.height - 15));
+
+        assert.deepEqual(img.size(), {
+            width: size.width - 15,
+            height: size.height - 15,
+        });
+    });
+
     it('should throw if zero width or height passed', () => {
         assert.throws(() => img.crop(1, 1, 0, 0));
     });

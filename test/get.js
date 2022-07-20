@@ -27,6 +27,18 @@ describe('get', () => {
         assert.deepEqual(a, {r: 0, g: 0, b: 0, a: 0});
     });
 
+    it('should return pixel colors and alpha when x,y are strings', () => {
+        const r = img.get('0', '0');
+        const g = img.get('1', '0');
+        const b = img.get('2', '0');
+        const a = img.get('3', '0');
+
+        assert.deepEqual(r, {r: 255, g: 0, b: 0, a: 255});
+        assert.deepEqual(g, {r: 0, g: 255, b: 0, a: 255});
+        assert.deepEqual(b, {r: 0, g: 0, b: 255, a: 255});
+        assert.deepEqual(a, {r: 0, g: 0, b: 0, a: 0});
+    });
+
     it('should return alpha 255 if image without alpha', () => {
         const noAlphaRaw = testData.readFileSync('rgb3x1_noalpha.png');
         const noAlphaImg = new PngImg(noAlphaRaw);
