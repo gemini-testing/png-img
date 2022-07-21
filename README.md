@@ -175,6 +175,15 @@ npm run build
 ```
 This will build native node extension and place it to the `compiled` directory
 
+## Release
+1. Up version in package json, create tag, and push it to repo. **Note**: Do not publish the package.
+```
+$ npm version <patch|minor|major>
+$ git push && git push --tags
+```
+2. Go to [tags page](https://github.com/gemini-testing/png-img/tags) and create release from pushed tag.
+3. Wait for the release workflow to finish. See the [actions page](https://github.com/gemini-testing/png-img/actions) to find the workflow.
+
 ## Vagrant
 Use [Vagrant](https://www.vagrantup.com/) to build and test on Linux and Windows from macOS.
 
