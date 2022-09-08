@@ -1,10 +1,7 @@
 /build/
+/dist/
 /node_modules/
 .vagrant
 win.box
 npm-debug.log
 .sublime-project*
-*.d.ts
-*.js
-!.eslintrc.js
-*.js.map

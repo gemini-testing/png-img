@@ -1,7 +1,7 @@
 'use strict';
 
-const PngImg = require('../');
-const RGBToString = require('../utils').RGBToString;
+const PngImg = require('../dist');
+const RGBToString = require('../dist/utils').RGBToString;
 const testData = require('./data');
 
 describe('set', () => {

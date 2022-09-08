@@ -1,5 +1,5 @@
 //@ts-expect-error because it is a binary file
-import {PngImg as PngImgImpl} from './build/Release/png_img';
+import {PngImg as PngImgImpl} from '../build/Release/png_img';
 import utils from './utils';
 
 import type {SaveCallback, Size, Color} from './types';

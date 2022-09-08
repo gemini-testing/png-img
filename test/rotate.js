@@ -1,8 +1,8 @@
 'use strict';
 
-const PngImg = require('../');
+const PngImg = require('../dist');
 const testData = require('./data');
-const RGBToString = require('../utils').RGBToString;
+const RGBToString = require('../dist/utils').RGBToString;
 
 const R1 = '#ff0000';
 const R2 = '#880000';
