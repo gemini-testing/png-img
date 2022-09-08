@@ -1,8 +1,9 @@
 {
     "extends": "@tsconfig/recommended/tsconfig.json",
-    "include": ["index.ts", "types.ts", "utils.ts"],
+    "include": ["src/ts"],
     "compilerOptions": {
         "target": "ES2019",
+        "outDir": "dist",
         "allowJs": true,
         "noImplicitReturns": true,
         "noUnusedLocals": true,

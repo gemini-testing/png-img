@@ -1,6 +1,6 @@
 {
   "variables": {
-    "src_dir": "./src"
+    "src_dir": "./src/cpp"
   },
   "targets": [
     {
