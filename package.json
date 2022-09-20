@@ -26,7 +26,7 @@
     "eslint": "^8.23.0",
     "eslint-config-gemini-testing": "^3.0.0",
     "mocha": "^2.0.1",
-    "node-gyp": "^6.1.0",
+    "node-gyp": "^9.1.0",
     "prebuild": "^11.0.0",
     "sinon": "^1.17.3",
     "typescript": "^4.5.3"
