@@ -1,6 +1,6 @@
 'use strict';
 
-const PngImg = require('../dist');
+const {PngImg} = require('../dist');
 const fs = require('fs');
 const path = require('path');
 const testData = require('./data');

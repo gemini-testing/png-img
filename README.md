@@ -30,11 +30,11 @@ Create `PngImg` object from passed buffer with image.
 Arguments:
  * `buf` - `Buffer` with image file content.
 ```js
-var fs = require('fs'),
-    PngImg = require('png-img');
+const fs = require('fs');
+const {PngImg} = require('png-img');
 
-var buf = fs.readFileSync('path/to/img.png'),
-    img = new PngImg(buf);
+const buf = fs.readFileSync('path/to/img.png');
+const img = new PngImg(buf);
 ```
 
 ### size()
