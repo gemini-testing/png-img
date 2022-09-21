@@ -1,6 +1,6 @@
 'use strict';
 
-const PngImg = require('../dist');
+const {PngImg} = require('../dist');
 const RGBToString = require('../dist/utils').RGBToString;
 const testData = require('./data');
 const rawImg = testData.readFileSync('test32x32.png');

@@ -2,10 +2,13 @@
   "name": "png-img",
   "version": "4.1.0",
   "description": "PNG Image",
-  "main": "dist/index.js",
+  "exports": {
+    ".": "./dist/index.js",
+    "./utils": "./dist/utils.js"
+  },
   "types": "dist/index.d.ts",
   "engines": {
-    "node": ">= 12.0.0"
+    "node": ">= 12.7.0"
   },
   "files": [
     "dist",

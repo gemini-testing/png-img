@@ -4,7 +4,7 @@ import utils from './utils';
 
 import type {SaveCallback, Size, Color} from './types';
 
-class PngImg {
+export class PngImg {
     private img_: PngImgImpl;
 
     /**
@@ -154,5 +154,3 @@ class PngImg {
         this.img_.write(file, callback);
     }
 }
-
-export = PngImg;
