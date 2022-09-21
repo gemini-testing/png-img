@@ -1,6 +1,6 @@
 {
   "name": "png-img",
-  "version": "4.1.0",
+  "version": "5.0.0",
   "description": "PNG Image",
   "exports": {
     ".": "./dist/index.js",
