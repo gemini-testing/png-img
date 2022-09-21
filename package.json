@@ -26,6 +26,7 @@
     "@typescript-eslint/eslint-plugin": "^5.36.1",
     "@typescript-eslint/parser": "^5.36.1",
     "chai": "^3.5.0",
+    "chai-as-promised": "^7.1.1",
     "eslint": "^8.23.0",
     "eslint-config-gemini-testing": "^3.0.0",
     "mocha": "^2.0.1",

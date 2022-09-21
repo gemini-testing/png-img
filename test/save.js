@@ -15,44 +15,35 @@ describe('save', () => {
         }
     });
 
-    it('should fail if non-exstent path passed', done => {
+    it('should fail if non-exstent path passed', async () => {
         const badPath = path.join(__dirname, 'asdf', 'tmp.png');
 
-        img.save(badPath, error => {
-            assert.isDefined(error);
-            done();
-        });
+        const savePromise = img.save(badPath);
+
+        assert.isRejected(savePromise, Error);
     });
 
-    it('should save image', done => {
-        img.save(savePath, error => {
-            assert.isUndefined(error);
-            assert.isTrue(fs.existsSync(savePath));
-            done();
-        });
+    it('should save image', async () => {
+        await img.save(savePath);
+
+        assert.isTrue(fs.existsSync(savePath));
     });
 
-    it('should overwrite existing file', done => {
+    it('should overwrite existing file', async () => {
         const txt = 'o.O';
         fs.writeFileSync(savePath, txt);
         assert.equal(fs.readFileSync(savePath, {encoding: 'utf8'}), txt);
 
-        img.save(savePath, error => {
-            assert.isUndefined(error);
-            assert.notEqual(fs.readFileSync(savePath, {encoding: 'utf8'}), txt);
-            done();
-        });
+        await img.save(savePath);
+
+        assert.notEqual(fs.readFileSync(savePath, {encoding: 'utf8'}), txt);
     });
 
-    it('should read previously saved img', done => {
-        img.save(savePath, error => {
-            assert.isUndefined(error);
+    it('should read previously saved img', async () => {
+        await img.save(savePath);
 
-            const img2 = new PngImg(fs.readFileSync(savePath));
+        const img2 = new PngImg(fs.readFileSync(savePath));
 
-            assert.deepEqual(img2.size(), img.size());
-
-            done();
-        });
+        assert.deepEqual(img2.size(), img.size());
     });
 });

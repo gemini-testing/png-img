@@ -2,7 +2,7 @@
 import {PngImg as PngImgImpl} from '../build/Release/png_img';
 import utils from './utils';
 
-import type {SaveCallback, Size, Color} from './types';
+import type {Size, Color} from './types';
 
 export class PngImg {
     private img_: PngImgImpl;
@@ -146,11 +146,17 @@ export class PngImg {
     }
 
     /**
-     * Save image to file. Asynchronous operation.
-     * @param file - path to file to save image
-     * @param callback - will be called after save operation finish or on error
+     * Save image to file
      */
-    public save(file: string, callback: SaveCallback): void {
-        this.img_.write(file, callback);
+    public async save(file: string): Promise<void> {
+        return new Promise((resolve, reject) => {
+            this.img_.write(file, (err: Error) => {
+                if (err) {
+                    reject(err);
+                } else {
+                    resolve();
+                }
+            });
+        });
     }
 }
