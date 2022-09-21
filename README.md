@@ -150,23 +150,16 @@ Rotates image 90 degrees clockwise
 ### rotateLeft()
 Rotates image 90 degress counterclockwise
 
-### save(file, callback)
+### save(file)
 Save image to file. Asynchronous operation.
 
 Arguments:
  * `file` - path to file to save image
- * `callback` - function with one argument (`error`). Will be called after save operation finish or on error.
 
 Overwrites existing file.
 
 ```js
-img.save('path/to/file.png', function(error) {
-    if(error) {
-        console.error('Error:', error);
-    } else {
-        console.log('OK');
-    }
-});
+await img.save('path/to/file.png');
 ```
 
 ## Build
