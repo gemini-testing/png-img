@@ -1,26 +1,26 @@
 #ifndef SAVE_WORKER_H
 #define SAVE_WORKER_H
 
-#include <napi.h>
-#include <string>
-#include <utility>
+#include  "./PromiseWorker.h"
 
 class PngImg;
 
 ///
 class SaveWorker
-    : public Napi::AsyncWorker
+    : public PromiseWorker
 {
 public:
-    ///
-    SaveWorker(Napi::Function& callback, PngImg& img, std::string file)
-        : Napi::AsyncWorker(callback)
+    SaveWorker(const Napi::Promise::Deferred& d, const PngImg& img, std::string file)
+        : PromiseWorker(d)
         , img_(img)
         , file_(std::move(file))
     {
     }
 
-    ///
+    void Resolve(Napi::Promise::Deferred const &deferred) override {
+        deferred.Resolve(deferred.Env().Undefined());
+    }
+
     void Execute() override {
         if(!img_.Write(file_)) {
             SetError(img_.LastError());
@@ -28,7 +28,7 @@ public:
     }
 
 private:
-    PngImg& img_;
+    const PngImg& img_;
     std::string file_;
 };
 

@@ -51,7 +51,7 @@ public:
     void Insert(const PngImg& img, png_uint_32 offsetX, png_uint_32 offsetY);
     void RotateRight();
     void RotateLeft();
-    bool Write(const std::string& file);
+    bool Write(const std::string& file) const;
 
 private:
     void ReadInfo_(PngReadStruct& readStruct);

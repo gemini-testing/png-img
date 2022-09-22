@@ -161,11 +161,11 @@ void PngImgAdapter::RotateLeft(const Napi::CallbackInfo& info) {
 
 ///
 Napi::Value PngImgAdapter::Write(const Napi::CallbackInfo& info) {
-    const Napi::Env &env = info.Env();
-
+    Napi::Promise::Deferred deferred = Napi::Promise::Deferred::New(info.Env());
     Napi::String file = info[0].As<Napi::String>();
-    Napi::Function cb = info[1].As<Napi::Function>();
-    auto *pWorker = new SaveWorker(cb, *img_, file);
+
+    auto *pWorker = new SaveWorker(deferred, *img_, file);
     pWorker->Queue();
-    return env.Undefined();
+
+    return deferred.Promise();
 }
