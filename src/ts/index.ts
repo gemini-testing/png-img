@@ -149,14 +149,6 @@ export class PngImg {
      * Save image to file
      */
     public async save(file: string): Promise<void> {
-        return new Promise((resolve, reject) => {
-            this.img_.write(file, (err: Error) => {
-                if (err) {
-                    reject(err);
-                } else {
-                    resolve();
-                }
-            });
-        });
+        await this.img_.write(file);
     }
 }

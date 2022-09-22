@@ -245,7 +245,7 @@ void PngImg::Rotate_(function<Point(const Point&, const ImgInfo&)> moveFn) {
 }
 
 ///
-bool PngImg::Write(const string& file) {
+bool PngImg::Write(const string& file) const {
     auto fileClose = [](FILE* fp){ if(fp) fclose(fp); };
     unique_ptr<FILE, decltype(fileClose)> fp(fopen(file.c_str(), "wb"), fileClose);
     if(!fp) {
@@ -274,7 +274,7 @@ bool PngImg::Write(const string& file) {
         info_.compression_type,
         info_.filter_type
     );
-    png_set_rows(pws.pngPtr, pws.infoPtr, &rowPtrs_[0]);
+    png_set_rows(pws.pngPtr, pws.infoPtr, const_cast<png_bytepp>(&rowPtrs_[0]));
     png_write_png(pws.pngPtr, pws.infoPtr, PNG_TRANSFORM_IDENTITY, NULL);
 
     return true;
