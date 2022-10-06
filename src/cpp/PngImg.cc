@@ -84,8 +84,7 @@ unique_ptr<Pxl> PngImg::Get(png_uint_32 x, png_uint_32 y) const
 {
     if(x >= info_.width || y >= info_.height)
     {
-        error_ = "Out of the bounds";
-        return nullptr;
+        throw std::logic_error("Out of the bounds");
     }
 
     png_bytep p = rowPtrs_[y] + info_.pxlsize * x;
@@ -99,12 +98,11 @@ unique_ptr<Pxl> PngImg::Get(png_uint_32 x, png_uint_32 y) const
 }
 
 ///
-bool PngImg::Fill(png_uint_32 offsetX, png_uint_32 offsetY, png_uint_32 width, png_uint_32 height, const Pxl& pxl)
+void PngImg::Fill(png_uint_32 offsetX, png_uint_32 offsetY, png_uint_32 width, png_uint_32 height, const Pxl& pxl)
 {
     if(!InBounds_(offsetX, offsetY, width, height))
     {
-        error_ = "Out of the bounds";
-        return false;
+        throw std::logic_error("Out of the bounds");
     }
 
     for(size_t i = 0; i < height; ++i) {
@@ -112,8 +110,6 @@ bool PngImg::Fill(png_uint_32 offsetX, png_uint_32 offsetY, png_uint_32 width, p
             Set_(offsetX + j, offsetY + i, pxl);
         }
     }
-
-    return true;
 }
 
 ///
@@ -129,12 +125,11 @@ void PngImg::Set_(png_uint_32 x, png_uint_32 y, const Pxl& pxl)
 }
 
 ///
-bool PngImg::Crop(png_uint_32 offsetX, png_uint_32 offsetY, png_uint_32 width, png_uint_32 height)
+void PngImg::Crop(png_uint_32 offsetX, png_uint_32 offsetY, png_uint_32 width, png_uint_32 height)
 {
     if(!InBounds_(offsetX, offsetY, width, height))
     {
-        error_ = "Out of the bounds";
-        return false;
+        throw std::logic_error("Out of the bounds");
     }
 
     for(size_t i = 0; i < height; ++i) {
@@ -145,7 +140,6 @@ bool PngImg::Crop(png_uint_32 offsetX, png_uint_32 offsetY, png_uint_32 width, p
     info_.width = width;
     info_.height = height;
     info_.rowbytes = info_.pxlsize * width;
-    return true;
 }
 
 ///
@@ -245,23 +239,20 @@ void PngImg::Rotate_(function<Point(const Point&, const ImgInfo&)> moveFn) {
 }
 
 ///
-bool PngImg::Write(const string& file) const {
+void PngImg::Write(const string& file) const {
     auto fileClose = [](FILE* fp){ if(fp) fclose(fp); };
     unique_ptr<FILE, decltype(fileClose)> fp(fopen(file.c_str(), "wb"), fileClose);
     if(!fp) {
-        error_ = "Can't open file for writing";
-        return false;
+        throw std::runtime_error("Can't open file for writing");
     }
 
     PngWriteStruct pws;
     if(!pws.Valid()) {
-        error_ = "Can't create png structs";
-        return false;
+        throw std::runtime_error("Can't create png structs");
     }
 
     if(setjmp(png_jmpbuf(pws.pngPtr))) {
-        error_ = "Can't write file";
-        return false;
+        throw std::runtime_error("Can't write file");
     }
 
     png_init_io(pws.pngPtr, fp.get());
@@ -276,6 +267,4 @@ bool PngImg::Write(const string& file) const {
     );
     png_set_rows(pws.pngPtr, pws.infoPtr, const_cast<png_bytepp>(&rowPtrs_[0]));
     png_write_png(pws.pngPtr, pws.infoPtr, PNG_TRANSFORM_IDENTITY, NULL);
-
-    return true;
 }
