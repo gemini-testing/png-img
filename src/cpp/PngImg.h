@@ -42,16 +42,15 @@ public:
 
     unsigned Width() const { return info_.width; }
     unsigned Height() const { return info_.height; }
-    std::string LastError() const { return error_; }
 
     std::unique_ptr<Pxl> Get(png_uint_32 x, png_uint_32 y) const;
-    bool Fill(png_uint_32 offsetX, png_uint_32 offsetY, png_uint_32 width, png_uint_32 height, const Pxl& pxl);
-    bool Crop(png_uint_32 offsetX, png_uint_32 offsetY, png_uint_32 width, png_uint_32 height);
+    void Fill(png_uint_32 offsetX, png_uint_32 offsetY, png_uint_32 width, png_uint_32 height, const Pxl& pxl);
+    void Crop(png_uint_32 offsetX, png_uint_32 offsetY, png_uint_32 width, png_uint_32 height);
     void SetSize(png_uint_32 width, png_uint_32 height);
     void Insert(const PngImg& img, png_uint_32 offsetX, png_uint_32 offsetY);
     void RotateRight();
     void RotateLeft();
-    bool Write(const std::string& file) const;
+    void Write(const std::string& file) const;
 
 private:
     void ReadInfo_(PngReadStruct& readStruct);
@@ -66,7 +65,6 @@ private:
     ImgInfo info_;
     std::vector<png_bytep> rowPtrs_;
     png_bytep data_;
-    mutable std::string error_;
 };
 
 #endif  // PNG_IMG_H

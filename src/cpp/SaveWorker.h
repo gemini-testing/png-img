@@ -22,9 +22,7 @@ public:
     }
 
     void Execute() override {
-        if(!img_.Write(file_)) {
-            SetError(img_.LastError());
-        }
+        img_.Write(file_);
     }
 
 private:

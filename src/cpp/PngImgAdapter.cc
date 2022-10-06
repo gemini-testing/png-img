@@ -3,8 +3,7 @@
 
 #include <napi.h>
 #include <png.h>
-
-using namespace std;
+#include <stdexcept>
 
 ///
 Napi::Function PngImgAdapter::Init(Napi::Env env) {
@@ -23,7 +22,6 @@ Napi::Function PngImgAdapter::Init(Napi::Env env) {
 
     return tpl;
 }
-class PngImgAdapter;
 
 PngImgAdapter::PngImgAdapter(Napi::CallbackInfo &info) :
     Napi::ObjectWrap<PngImgAdapter>(info) {
@@ -57,23 +55,25 @@ Napi::Value PngImgAdapter::Height(const Napi::CallbackInfo &info) {
 ///
 Napi::Value PngImgAdapter::Get(const Napi::CallbackInfo& info) {
     const Napi::Env &env = info.Env();
-    auto pPxl = img_->Get(info[0].ToNumber().Uint32Value(), info[1].ToNumber().Uint32Value());
-    if(!pPxl) {
-        throw Napi::Error::New(env, img_->LastError().c_str());
+
+    try {
+        auto pPxl = img_->Get(info[0].ToNumber().Uint32Value(), info[1].ToNumber().Uint32Value());
+
+        Napi::Object obj = Napi::Object::New(env);
+        obj.Set("r", Napi::Number::New(env, pPxl->r));
+        obj.Set("g", Napi::Number::New(env, pPxl->g));
+        obj.Set("b", Napi::Number::New(env, pPxl->b));
+        obj.Set("a", Napi::Number::New(env, pPxl->a));
+
+        return obj;
+    } catch(const std::exception& e) {
+        throw Napi::Error::New(env, e.what());
     }
-
-    Napi::Object obj = Napi::Object::New(env);
-    obj.Set("r", Napi::Number::New(env, pPxl->r));
-    obj.Set("g", Napi::Number::New(env, pPxl->g));
-    obj.Set("b", Napi::Number::New(env, pPxl->b));
-    obj.Set("a", Napi::Number::New(env, pPxl->a));
-
-    return obj;
 }
 
 ///
 Pxl RGBObjToPxl(Napi::Env env, const Napi::Object& obj) {
-    auto getIntVal_ = [&obj](const string& key) {
+    auto getIntVal_ = [&obj](const std::string& key) {
         std::string val = obj.Get(key).ToString().Utf8Value();
         return static_cast<short>(stoi(val));
     };
@@ -91,35 +91,37 @@ Pxl RGBObjToPxl(Napi::Env env, const Napi::Object& obj) {
 Napi::Value PngImgAdapter::Fill(const Napi::CallbackInfo& info) {
     const Napi::Env &env = info.Env();
 
-    const bool ok = img_->Fill(
-        info[0].ToNumber().Uint32Value(),
-        info[1].ToNumber().Uint32Value(),
-        info[2].ToNumber().Uint32Value(),
-        info[3].ToNumber().Uint32Value(),
-        RGBObjToPxl(env, info[4].As<Napi::Object>())
-    );
-    if(!ok) {
-        throw Napi::Error::New(env, img_->LastError().c_str());
-    }
+    try {
+        img_->Fill(
+            info[0].ToNumber().Uint32Value(),
+            info[1].ToNumber().Uint32Value(),
+            info[2].ToNumber().Uint32Value(),
+            info[3].ToNumber().Uint32Value(),
+            RGBObjToPxl(env, info[4].As<Napi::Object>())
+        );
 
-    return env.Undefined();
+        return env.Undefined();
+    } catch(const std::exception& e) {
+        throw Napi::Error::New(env, e.what());
+    }
 }
 
 ///
 Napi::Value PngImgAdapter::Crop(const Napi::CallbackInfo& info) {
     const Napi::Env &env = info.Env();
 
-    const bool ok = img_->Crop(
-        info[0].ToNumber().Uint32Value(),
-        info[1].ToNumber().Uint32Value(),
-        info[2].ToNumber().Uint32Value(),
-        info[3].ToNumber().Uint32Value()
-    );
-    if(!ok) {
-        throw Napi::Error::New(env, img_->LastError().c_str());
-    }
+    try {
+        img_->Crop(
+            info[0].ToNumber().Uint32Value(),
+            info[1].ToNumber().Uint32Value(),
+            info[2].ToNumber().Uint32Value(),
+            info[3].ToNumber().Uint32Value()
+        );
 
-    return env.Undefined();
+        return env.Undefined();
+    } catch(const std::exception& e) {
+        throw Napi::Error::New(env, e.what());
+    }
 }
 
 ///
