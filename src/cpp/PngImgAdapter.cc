@@ -79,10 +79,10 @@ Pxl RGBObjToPxl(Napi::Env env, const Napi::Object& obj) {
     };
 
     Pxl pxl{
-        .r = getIntVal_("r"),
-        .g = getIntVal_("g"),
-        .b = getIntVal_("b"),
-        .a = getIntVal_("a"),
+        getIntVal_("r"),
+        getIntVal_("g"),
+        getIntVal_("b"),
+        getIntVal_("a")
     };
     return pxl;
 }
